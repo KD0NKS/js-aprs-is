@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "module": "system",
+        "target": "esnext",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outFile": "./build/dist/IS.js",
+        "sourceMap": true
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [ "bin", "node_modules" ],
+    "atom": { "rewriteTsconfig": false }
+}

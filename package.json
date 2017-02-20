@@ -1,0 +1,19 @@
+{
+  "name": "js-aprs-is",
+  "version": "1.0.0",
+  "description": "NodeJs library for connecting to an APRS-IS server.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "APRS",
+    "APRS-IS",
+    "APRSC"
+  ],
+  "author": "afairhurst",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^7.0.5"
+  }
+}
