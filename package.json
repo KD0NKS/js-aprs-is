@@ -4,16 +4,30 @@
   "description": "NodeJs library for connecting to an APRS-IS server.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublish": "tsc src/IS.ts --module commonjs",
+    "pretest": "tsc test/IS.ts --module commonjs",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KD0NKS/js-aprs-is.git"
   },
   "keywords": [
     "APRS",
     "APRS-IS",
-    "APRSC"
+    "APRSC",
+    "ham radio",
+    "amateur radio"
   ],
   "author": "afairhurst",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^7.0.5"
+    "@types/chai": "^3.4.35",
+    "@types/mocha": "^2.2.39",
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  },
+  "dependencies": {
+    "typescript": "^2.2.1"
   }
 }
