@@ -56,7 +56,6 @@ export default class IS extends EventEmitter {
 
     // TODO: auto reconnect?
 
-
 	/**
      * @summary
      * Initializes a new JS-APRS-IS socket. Takes two mandatory arguments,
