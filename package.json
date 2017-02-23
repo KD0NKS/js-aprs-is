@@ -4,9 +4,9 @@
   "description": "NodeJs library for connecting to an APRS-IS server.",
   "main": "index.js",
   "scripts": {
-    "prepublish": "tsc src/IS.ts --module commonjs",
-    "pretest": "tsc test/IS.ts --module commonjs",
-    "test": "mocha"
+    "prepublish": "./node_modules/typescript/bin/tsc src/IS.ts --module commonjs",
+    "pretest": "./node_modules/typescript/bin/tsc test/IS.ts --module commonjs",
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "repository": {
     "type": "git",

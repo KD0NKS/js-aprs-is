@@ -52,41 +52,43 @@ const VERSION: string = '0.01';
 export default class IS extends EventEmitter {
 	// socket
 	private socket: Socket;
+    private isSocketConnected: boolean;
+
+    // TODO: auto reconnect?
 
 
 	/**
-     * Initializes a new Ham::APRS::IS socket. Takes two mandatory arguments,
+     * @summary
+     * Initializes a new JS-APRS-IS socket. Takes two mandatory arguments,
      * the host:port pair to connect to and your client's callsign, and one or more
      * optional named options:
      *
-     * =item * filter: an APRS-IS filter string sent to the server
-     * =item * passcode: an APRS-IS passcode
-     * =item * appid: your application's name and version number direction finding
+     * @param {string} host - APRS-IS server to connect to.
+     * @param {number} port - Port number of the APRS-IS server to connect to.
+     * @param {string} [callsign=N0CALL] - Your station's callsign.
+     * @param {number} [passcode=-1] - An APRS-IS passcode.
+     * @param {string} [filter] - An APRS-IS filter string sent to the server.
+     * @param {string} [appid=IS.js 0.01] - Your application's name and version number direction finding.
+     * @param {boolean} [isTransmitEnabled=false] - Whether or not to allow the connection to transmit any packets other than a login message.
      *
-     * my $is = new Ham::APRS::IS('aprs.server.com:12345', 'N0CALL', 'appid' => 'myapp 3.4b');
-     * my $is = new Ham::APRS::IS('aprs.server.com:12345', 'N0CALL', 'appid' => 'foobar 42', 'filter' => 'f/*');
-     * my $is = new Ham::APRS::IS('aprs.server.com:12345', 'N0CALL', 'passcode' => 1234, 'appid' => 'myapp 1.2');
+     * @example
+     * let connection = new IS('aprs.server.com', 12345);
+     * let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b');
+     * let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, 'f/*', 'foobar 42');
+     * let connection = new IS('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2', true);
 	 */
+    // Don't provide multiple constructors.  Passing undefined parameters is annoying, but ideally, most, if not all
+    // parameters should be used anyway.
 	constructor(public host: string
             , public port: number
-            , public callsign?: string
-            , public passcode?: number
+            , public callsign = "N0CALL"
+            , public passcode = -1
             , public filter?: string
-            , public appId?: string) {
+            , public appId = `IS.js ${VERSION}`
+            , public isTransmitEnabled = false) {
 		super();
 
-        //if(typeof RetailPrice!='undefined' && RetailPrice)
-        if(typeof callsign == 'undefined' || !callsign) {
-            this.callsign = 'N0CALL'
-        }
-
-        if(typeof passcode == 'undefined' || !passcode) {
-            this.passcode = -1;
-        }
-
-        if(typeof appId != 'undefined' || appId) {
-            this.appId = `IS.js ${VERSION}`
-        }
+        this.isSocketConnected = false;
 
         // TODO: Do we want to throw errors if the host, port, callsign, are null?
 	}
@@ -224,11 +226,12 @@ Checks whether we're connected currently. Returns 1 for connected, 0 for not con
 */
 	isConnected() { //sub connected($)
         /*
-	my($self) = @_;
+        my($self) = @_;
 
-	return 1 if $self->{'state'} eq 'connected';
-	return 0;
-    */
+        return 1 if $self->{'state'} eq 'connected';
+        return 0;
+        */
+
         return this.socket === null;
     }
 }
