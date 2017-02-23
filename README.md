@@ -8,6 +8,10 @@ methods/functions.
 
 This project is only intended to communicate with JavAPRS-IS and APRS-C servers, not TNCs.
 
+## TO CONSIDER
+* Should the user/application have to explicitly ask for data before events are emitted?
+* Allow connections to IS server to automatically reconnect on failure?
+
 ## SEE ALSO
 
 * [perl-aprs-fap](https://github.com/hessu/perl-aprs-fap)
