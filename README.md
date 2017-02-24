@@ -1,4 +1,4 @@
-# js-aprs-fap
+# js-aprs-is
 
 This project will attempt to provide a node version of the perl-aprs-fap/HAM::APRS::FAP IS class/module.
 Over time, it is likely this will diverge from the original code due to platforms and networks,
