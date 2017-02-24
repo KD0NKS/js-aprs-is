@@ -60,20 +60,21 @@ describe('Tests for IS class', () => {
         it('Should return a user connection string with all default parameters and no filter.', () => {
             let connection = new IS('aprs.server.com', 12345);
 
-            expect(connection.UserLogin).to.equal("user N0CALL pass -1 vers IS.js 0.01");
+            expect(connection.userLogin).to.equal("user N0CALL pass -1 vers IS.js 0.01");
         });
 
         it('Should return a user connection string where all parameters including filter are specified.', () => {
             let connection = new IS('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2');
 
-            expect(connection.UserLogin).to.equal("user N0CALL pass 1234 vers myapp 1.2 filter f/*")
+            expect(connection.userLogin).to.equal("user N0CALL pass 1234 vers myapp 1.2 filter f/*")
         });
     });
 
-    let connection: IS;
-    let server;
+
 
     describe('Test connect/disconnect', () => {
+        let connection: IS;
+        let server;
         this.connection = new IS("localhost", 14580);
 
         before(() => {

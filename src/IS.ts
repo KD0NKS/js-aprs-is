@@ -190,7 +190,7 @@ export default class IS extends EventEmitter {
      * Generates a user login packet for an APRS-IS server.
      * @returns {string} Formatted user login packet/message without message delimiter.
      */
-    get UserLogin(): string {
+    get userLogin(): string {
         return `user ${this.callsign} pass ${this.passcode} vers ${this.appId}`
                 + ((this.filter == undefined || !this.filter) ? '' : ` filter ${this.filter}`);
     }
