@@ -52,9 +52,10 @@ import { Socket } from 'net';
  *   $is->disconnect() || die "Failed to disconnect: $is->{error}";
  */
 const VERSION: string = '0.01';
+const MESSAGE_DELIMITER = '\r\n';
 
 export default class IS extends EventEmitter {
-	// socket
+    // socket
 	private socket: Socket;
 
     // not a fan of this... emit events instead?
@@ -96,17 +97,13 @@ export default class IS extends EventEmitter {
         // TODO: Do we want to throw errors if the host, port, callsign, are null?
 	}
 
-/*
-Connects to the server. Returns 1 on success, 0 on failure.
-Takes an optional options hash as a parameter. Currently knows only one parameter,
-retryuntil, which specifies the number of seconds to retry the connection. After
-each failed attempt the code sleeps for 0.5 seconds before trying again. Defaults
-to 0 (no retries).
-
-TODO: reconnects?  are we really interested?
-
-  $is->connect('retryuntil' => 10) || die "Failed to connect: $is->{error}";
-*/
+    /**
+     * Connects to the server. Returns 1 on success, 0 on failure.
+     *
+     * TODO: reconnects?  are we really interested?
+     *
+     * @example connection.connect()
+     */
 	connect(): void { //sub connect($;%)
         if(this.socket || this.socket !== undefined) {
             throw new Error('Already connected.')
@@ -182,10 +179,20 @@ TODO: reconnects?  are we really interested?
      * In a perfect world, this tells whether the socket is currently connected.
      *
      * @returns {boolean} True if connected, otherwise false.
+     *
+     * @example connection.isConnected()
      */
 	isConnected(): boolean {
         return this.isSocketConnected === true;
     };
+
+    /**
+     * Generates a user login packet for an APRS-IS server.
+     * @returns {string} Formatted user login packet/message without message delimiter.
+     */
+    get UserLogin(): string {
+        return `user ${this.callsign} pass ${this.passcode} vers ${this.appId}` + this.filter ? ` filter ${this.filter}` : '';
+    }
 }
 
 /*
