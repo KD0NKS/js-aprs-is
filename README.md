@@ -9,8 +9,8 @@ methods/functions.
 This project is only intended to communicate with JavAPRS-IS and APRS-C servers, not TNCs.
 
 ## TO CONSIDER
-* Should the user/application have to explicitly ask for data before events are emitted?
 * Allow connections to IS server to automatically reconnect on failure?
+  * The original client specified number of retries at a half second interval.
 
 ## SEE ALSO
 
