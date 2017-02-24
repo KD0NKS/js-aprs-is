@@ -1,5 +1,7 @@
 # js-aprs-is
 
+APRS is a registered trademark Bob Bruninga, WB4APR.
+
 This project will attempt to provide a node version of the perl-aprs-fap/HAM::APRS::FAP IS class/module.
 Over time, it is likely this will diverge from the original code due to platforms and networks,
 but will attempt to keep usage straightforward and similar where applicable.  The biggest
