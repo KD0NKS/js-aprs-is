@@ -191,7 +191,8 @@ export default class IS extends EventEmitter {
      * @returns {string} Formatted user login packet/message without message delimiter.
      */
     get UserLogin(): string {
-        return `user ${this.callsign} pass ${this.passcode} vers ${this.appId}` + this.filter ? ` filter ${this.filter}` : '';
+        return `user ${this.callsign} pass ${this.passcode} vers ${this.appId}`
+                + ((this.filter == undefined || !this.filter) ? '' : ` filter ${this.filter}`);
     }
 }
 

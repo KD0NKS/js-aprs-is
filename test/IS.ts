@@ -4,9 +4,9 @@ import { expect } from 'chai';
 
 import IS from '../src/IS';
 
-describe('TEST', () => {
-    describe('Test IS constructor using all possible default parameter values.', () => {
-        it('Should return an IS connection with all possible defaults taken.', () => {
+describe('Tests for IS class', () => {
+    describe('Test IS constructor.', () => {
+        it('Should instantiate an IS instance using all possible default parameter values.', () => {
             let connection = new IS('aprs.server.com', 12345);
 
             expect(connection.host).to.equal('aprs.server.com');
@@ -17,10 +17,8 @@ describe('TEST', () => {
             expect(connection.appId).to.equal('IS.js 0.01')
             expect(connection.isTransmitEnabled).to.be.false;
         });
-    });
 
-    describe('Test IS constructor using callsign and appId.', () => {
-        it('Should return an IS connection witn given host, port, callsign, and appId.  All other values should default.', () => {
+        it('Should instantiate an IS connection with given host, port, callsign, and appId.  All other values should default.', () => {
             let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b');
 
             expect(connection.host).to.equal('aprs.server.com');
@@ -31,10 +29,8 @@ describe('TEST', () => {
             expect(connection.appId).to.equal('myapp 3.4b')
             expect(connection.isTransmitEnabled).to.be.false;
         });
-    });
 
-    describe('Test IS constructor using callsign, filter, and appId.', () => {
-        it('Should return an IS connection witn given host, port, callsign, filter, and appId.  All other values should default.', () => {
+        it('Should instantiate an IS connection with given host, port, callsign, filter, and appId.  All other values should default.', () => {
             let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, 'f/*', 'foobar 42');
 
             expect(connection.host).to.equal('aprs.server.com');
@@ -45,10 +41,8 @@ describe('TEST', () => {
             expect(connection.appId).to.equal('foobar 42')
             expect(connection.isTransmitEnabled).to.be.false;
         });
-    });
 
-    describe('Test IS constructor passing all parameters.', () => {
-        it('Should return an IS connection witn given host, port, callsign, filter, and appId.  All other values should default.', () => {
+        it('Should instantiate an IS connection with given host, port, callsign, filter, and appId.  All other values should default.', () => {
             let connection = new IS('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2', true);
 
             expect(connection.host).to.equal('aprs.server.com');
@@ -59,6 +53,20 @@ describe('TEST', () => {
             expect(connection.appId).to.equal('myapp 1.2')
             expect(connection.isTransmitEnabled).to.be.true;
             expect(connection.isConnected()).to.be.false;
+        });
+    });
+
+    describe('Test UserLogin.', () => {
+        it('Should return a user connection string with all default parameters and no filter.', () => {
+            let connection = new IS('aprs.server.com', 12345);
+
+            expect(connection.UserLogin).to.equal("user N0CALL pass -1 vers IS.js 0.01");
+        });
+
+        it('Should return a user connection string where all parameters including filter are specified.', () => {
+            let connection = new IS('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2');
+
+            expect(connection.UserLogin).to.equal("user N0CALL pass 1234 vers myapp 1.2 filter f/*")
         });
     });
 
