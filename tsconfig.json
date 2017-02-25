@@ -8,7 +8,8 @@
         "allowJs": false,
         "preserveConstEnums": true,
         "outDir": "build/dist",
-        "sourceMap": true
+        "sourceMap": true,
+        "declaration": true
     },
     "include": [
         "src/**/*"

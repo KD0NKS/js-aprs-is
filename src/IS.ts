@@ -15,10 +15,8 @@ import { Socket } from 'net';
  * - Stand alone module from perl-aprs-fap.  Allows a user to utilize any parser they chose.
  *
  * @author Andrew Fairhurst, KD0NKS
- * @author Matti Aarnio, OH2MQK
- * @author Heikki Hannikainen, OH7LZB hessu@hes.iki.fiE<gt>
  *
- * @copyright 2017 by Andrew Fairhurst, 2000-3000 by Matti Aarnio, 2000-3000 by Heikki Hannikainen
+ * @copyright 2017 by Andrew Fairhurst
  *
  * This library is free software; you can redistribute it and/or modify
  * it under the same terms as Perl itself.
@@ -77,7 +75,6 @@ export default class IS extends EventEmitter {
      * @param {number} [passcode=-1] - An APRS-IS passcode.
      * @param {string} [filter] - An APRS-IS filter string sent to the server.
      * @param {string} [appid=IS.js 0.01] - Your application's name and version number direction finding. Should not exceed 15 characters.
-     * @param {boolean} [isTransmitEnabled=false] - Whether or not to allow the connection to transmit any packets other than a login message.
      *
      * @example let connection = new IS('aprs.server.com', 12345);
      * @example let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b');
@@ -92,7 +89,7 @@ export default class IS extends EventEmitter {
             , public passcode = -1
             , public filter?: string
             , public appId = `IS.js ${VERSION}` // (appname and versionnum should not exceed 15 characters)
-            , public isTransmitEnabled = false) {
+            ) {
 		super();
 
         this.isSocketConnected = false;
@@ -117,6 +114,7 @@ export default class IS extends EventEmitter {
         this.socket.on('error', (error: Error) => {
             this.isSocketConnected = false;
 
+            // throw error rather than emit?
             this.emit('socketError', error);
         });
 
@@ -179,6 +177,27 @@ export default class IS extends EventEmitter {
     }
 
     /**
+     * Transmits a line (typically an APRS packet) to the APRS-IS. The line
+     * should be a complete packet but WITHOUT the <CR><LF> separator
+     * used on the APRS-IS.
+     *
+     * @param {string} line - Packet/message to send with <CR><LF> delimiter.
+     */
+    sendLine(line: string) {
+        if(!this.isConnected || this.socket == undefined || !this.socket) {
+            throw new Error("Socket not connected.");
+        }
+
+        // TODO: do we care about format validation?
+        // Trusting the calling appliation to handle this appropriately for now.
+        line = `line${MESSAGE_DELIMITER}`;
+
+        this.emit('sending', line);
+        this.emit('data', line);
+        this.socket.write(line, 'utf8');
+    }
+
+    /**
      * In a perfect world, this tells whether the socket is currently connected.
      *
      * @returns {boolean} True if connected, otherwise false.
@@ -200,37 +219,3 @@ export default class IS extends EventEmitter {
                 + ((this.filter == undefined || !this.filter) ? '' : ` filter ${this.filter}`);
     }
 }
-
-/*
-
-Transmits a line (typically an APRS packet) to the APRS-IS. The line
-should be a complete packet but WITHOUT the <CR><LF> separator
-used on the APRS-IS.
-
-sub sendline($$)
-{
-	my($self, $line) = @_;
-	return undef if ($self->{'state'} ne 'connected');
-
-	if (!defined $self->{'sock'}->blocking(1)) {
-		#warn "sendline: blocking(1) failed: $!\n";
-		$self->{'error'} = "sendline: blocking(1) failed: $!";
-		return undef;
-	}
-	my $ret = $self->{'sock'}->printf( "%s\r\n", $line);
-	if (!$self->{'sock'}->flush) {
-		#warn "sendline: flush() failed: $!\n";
-		$self->{'error'} = "sendline: flush() failed: $!";
-		return undef;
-	}
-
-	if (!defined $self->{'sock'}->blocking(0)) {
-		#warn "sendline: blocking(1) failed: $!\n";
-		$self->{'error'} = "sendline: blocking(1) failed: $!";
-		return undef;
-	}
-
-	#warn "sent ($ret): $line\n";
-	return $ret;
-}
-*/

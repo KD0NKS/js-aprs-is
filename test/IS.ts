@@ -14,8 +14,7 @@ describe('Tests for IS class', () => {
             expect(connection.callsign).to.equal('N0CALL');
             expect(connection.passcode).to.equal(-1);
             expect(connection.filter).to.be.undefined;
-            expect(connection.appId).to.equal('IS.js 0.01')
-            expect(connection.isTransmitEnabled).to.be.false;
+            expect(connection.appId).to.equal('IS.js 0.01');
         });
 
         it('Should instantiate an IS connection with given host, port, callsign, and appId.  All other values should default.', () => {
@@ -26,8 +25,7 @@ describe('Tests for IS class', () => {
             expect(connection.callsign).to.equal('N0CALL');
             expect(connection.passcode).to.equal(-1);
             expect(connection.filter).to.be.undefined;
-            expect(connection.appId).to.equal('myapp 3.4b')
-            expect(connection.isTransmitEnabled).to.be.false;
+            expect(connection.appId).to.equal('myapp 3.4b');
         });
 
         it('Should instantiate an IS connection with given host, port, callsign, filter, and appId.  All other values should default.', () => {
@@ -39,11 +37,10 @@ describe('Tests for IS class', () => {
             expect(connection.passcode).to.equal(-1);
             expect(connection.filter).to.equal('f/*');
             expect(connection.appId).to.equal('foobar 42')
-            expect(connection.isTransmitEnabled).to.be.false;
         });
 
         it('Should instantiate an IS connection with given host, port, callsign, filter, and appId.  All other values should default.', () => {
-            let connection = new IS('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2', true);
+            let connection = new IS('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2');
 
             expect(connection.host).to.equal('aprs.server.com');
             expect(connection.port).to.equal(12345);
@@ -51,7 +48,6 @@ describe('Tests for IS class', () => {
             expect(connection.passcode).to.equal(1234);
             expect(connection.filter).to.equal('f/*');
             expect(connection.appId).to.equal('myapp 1.2')
-            expect(connection.isTransmitEnabled).to.be.true;
             expect(connection.isConnected()).to.be.false;
         });
     });
@@ -69,8 +65,6 @@ describe('Tests for IS class', () => {
             expect(connection.userLogin).to.equal("user N0CALL pass 1234 vers myapp 1.2 filter f/*")
         });
     });
-
-
 
     describe('Test connect/disconnect', () => {
         let connection: IS;
