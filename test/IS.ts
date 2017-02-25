@@ -102,61 +102,65 @@ describe('Tests for IS class', () => {
         });
     });
 
-    /*
     describe('Test connect/disconnect and receiving data from the server', () => {
-        let server: net.Server;
         let connection: IS = new IS("localhost", 14580);
-        let clientReceived: string[];
+        let server: net.Server;
+        let clientReceived: string[] = [];
+        let serverReceived: string[] = [];
 
         before((done) => {
-            clientReceived = [];
-
             server = net.createServer((c) => {
-                console.log('client connected');
+                c.write('test 1\r\n', 'utf8');
+                c.write('test 2\r\n', 'utf8');
 
-                c.write('test 1');
-
-                c.on('end', () => {
-                    console.log('client disconnected');
+                c.on('data', (data) => {
+                    serverReceived.push(data.toString());
                 });
-            }).on('error', (err) => {
-                // handle errors here
-                throw err;
             });
 
             server.listen('14580', () => {
-                console.log('server bound');
+                done();
             });
-
-            // test fails if not done in the before section
-            connection.on('data', (data: string) => {
-                clientReceived.push(data);
-            });
-
-            connection.connect();
-            done();
         });
 
         it('Client should successfully connect to server.', (done) => {
-            expect(connection.isConnected()).to.be.false;
+            connection.on('data', (data) => {
+                clientReceived.push(data.toString());
+            });
 
-            // test fails if done in the after section
-            connection.disconnect();
+            connection.on('connect', () => {
+                this.write('test 1\r\n', 'utf8');
+                this.write('test 2\r\n', 'utf8');
+                this.write('test 3\r\n', 'utf8');
+            });
+
+            connection.connect(() => {
+                expect(connection.isConnected).to.be.true;
+            });
 
             done();
         });
 
-        after(() => {
+        it('Client should successfully disconnect from server.', (done) => {
+            connection.disconnect(() => {
+                expect(connection.isConnected).to.be.false;
+            });
+
+            done();
+        });
+
+        it('Client should have received 2 messages.', () => {
+            clientReceived.length = 2;
+        });
+
+        it('Server should have received 3 messages.', () => {
+            clientReceived.length = 3;
+        });
+
+        after((done) => {
             server.close();
 
-            it('Client should successfully disconnect from server.', () => {
-                expect(connection.isConnected()).to.be.true;
-            });
-
-            it('Client should have received 2 messages.', () => {
-                expect(clientReceived.length == 2);
-            });
+            done();
         });
     });
-    */
 });
