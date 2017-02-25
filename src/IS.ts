@@ -50,6 +50,7 @@ import { Socket } from 'net';
  */
 const VERSION: string = '0.01';
 const MESSAGE_DELIMITER = '\r\n';
+const DISCONNECT_EVENTS: string[] = ['destroy', 'end', 'close', 'error', 'timeout'];
 
 export default class IS extends Socket {
     // not a fan of this... emit events instead? build it out to be a wrapper around null/readable/writable?
@@ -109,6 +110,10 @@ export default class IS extends Socket {
             }
         });
 
+        for(var e in DISCONNECT_EVENTS) {
+            this.isSocketConnected = false;
+        }
+
         /*
         ##    *  Need to send on initial connect the following logon line:
         ##      user callsign pass passcode vers appname versionnum rest_of_line
@@ -139,8 +144,6 @@ export default class IS extends Socket {
      */
 	disconnect(callback?: any) {
         super.end("", () => {
-            this.isSocketConnected = false;
-
             if(callback) {
                 callback();
             }
