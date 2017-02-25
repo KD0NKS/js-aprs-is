@@ -1,5 +1,4 @@
 /// <reference> 'node_modules/@types/node/index.d.ts'
-import { EventEmitter } from 'events' ;
 import { Socket } from 'net';
 
 /**
@@ -52,11 +51,8 @@ import { Socket } from 'net';
 const VERSION: string = '0.01';
 const MESSAGE_DELIMITER = '\r\n';
 
-export default class IS extends EventEmitter {
-    // socket
-	private socket: Socket;
-
-    // not a fan of this... emit events instead?
+export default class IS extends Socket {
+    // not a fan of this... emit events instead? build it out to be a wrapper around null/readable/writable?
     private isSocketConnected: boolean;
 
     // TODO: auto reconnect?
@@ -104,32 +100,13 @@ export default class IS extends EventEmitter {
      *
      * @example connection.connect()
      */
-	connect(): void { //sub connect($;%)
-        if(this.socket || this.socket !== undefined) {
-            throw new Error('Already connected.')
-        }
-
-        this.socket = new Socket();
-
-        this.socket.on('error', (error: Error) => {
-            this.isSocketConnected = false;
-
-            // throw error rather than emit?
-            this.emit('socketError', error);
-        });
-
-        this.socket.on('end', () => {
-            this.isSocketConnected = false;
-
-            this.emit('socketEnd')
-        });
-
-        this.socket.on('data', (data) => {
-            this.emit('data');
-        });
-
-        this.socket.connect(this.port, this.host, () => {
+	connect(callback?: any): void { //sub connect($;%)
+        super.connect(this.port, this.host, () => {
             this.isSocketConnected = true;
+
+            if(callback) {
+                callback();
+            }
         });
 
         /*
@@ -156,24 +133,18 @@ export default class IS extends EventEmitter {
 
     /**
      * Disconnects from the server.
+     * Wrapper method for net.Socket.end() method.
      *
      * @example connection.disconnect();
      */
-	disconnect() {  //sub disconnect($)
-        if(this.socket != undefined) {
-            try {
-                this.socket.end();
-            } catch(error) { }
+	disconnect(callback?: any) {
+        super.end("", () => {
+            this.isSocketConnected = false;
 
-            try {
-                if(this.socket != undefined && this.socket) {
-                    this.socket.destroy();
-                }
-            } catch(error) { }
-        }
-
-        // Let's make absolutely sure...
-        this.socket = null;
+            if(callback) {
+                callback();
+            }
+        });
     }
 
     /**
@@ -184,7 +155,7 @@ export default class IS extends EventEmitter {
      * @param {string} line - Packet/message to send with <CR><LF> delimiter.
      */
     sendLine(line: string) {
-        if(!this.isConnected || this.socket == undefined || !this.socket) {
+        if(!this.isConnected) {
             throw new Error("Socket not connected.");
         }
 
@@ -194,7 +165,8 @@ export default class IS extends EventEmitter {
 
         this.emit('sending', line);
         this.emit('data', line);
-        this.socket.write(line, 'utf8');
+
+        super.write(line, 'utf8');
     }
 
     /**
@@ -205,6 +177,7 @@ export default class IS extends EventEmitter {
      * @example connection.isConnected()
      */
 	isConnected(): boolean {
+        // use socket.writeable instead?
         return this.isSocketConnected === true;
     };
 
