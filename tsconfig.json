@@ -1,15 +1,18 @@
 {
     "compilerOptions": {
-        "module": "system",
+        "module": "commonjs",
+        "moduleResolution": "node",
         "target": "esnext",
         "noImplicitAny": true,
         "removeComments": true,
+        "allowJs": false,
         "preserveConstEnums": true,
-        "outFile": "./build/dist/IS.js",
+        "outDir": "build/dist",
         "sourceMap": true
     },
     "include": [
         "src/**/*"
+        , "test/**/*"
     ],
     "exclude": [ "bin", "node_modules" ],
     "atom": { "rewriteTsconfig": false }

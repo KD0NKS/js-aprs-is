@@ -62,10 +62,13 @@ export default class IS extends EventEmitter {
     private isSocketConnected: boolean;
 
     // TODO: auto reconnect?
+    // check for empty callsign
+    // check for empty host
+    // check for empty appid
 
 	/**
      * Initializes a new JS-APRS-IS socket. Takes two mandatory arguments,
-     * the host:port pair to connect to and your client's callsign, and one or more
+     * the host and port to connect to and your client's callsign, and one or more
      * optional named options:
      *
      * @param {string} host - APRS-IS server to connect to.
@@ -98,7 +101,7 @@ export default class IS extends EventEmitter {
 	}
 
     /**
-     * Connects to the server. Returns 1 on success, 0 on failure.
+     * Connects to the server.
      *
      * TODO: reconnects?  are we really interested?
      *
@@ -188,6 +191,8 @@ export default class IS extends EventEmitter {
 
     /**
      * Generates a user login packet for an APRS-IS server.
+     * Replaces perl-aprs-is user_command function.
+     *
      * @returns {string} Formatted user login packet/message without message delimiter.
      */
     get userLogin(): string {
@@ -197,30 +202,10 @@ export default class IS extends EventEmitter {
 }
 
 /*
-sub user_command($)
-{
-	my($self) = @_;
-
-	if (defined($self->{'filter'})) {
-		return sprintf("user %s pass %s vers %s filter %s\r\n",
-			$self->{'mycall'},
-			$self->{'passcode'},
-			$self->{'appid'}, $self->{'filter'} );
-	} else {
-		return sprintf("user %s pass %s vers %s\r\n",
-			$self->{'mycall'},
-			$self->{'passcode'},
-			$self->{'appid'} );
-	}
-}
-
-=head1 sendline(packet)
 
 Transmits a line (typically an APRS packet) to the APRS-IS. The line
 should be a complete packet but WITHOUT the <CR><LF> separator
 used on the APRS-IS.
-
-=cut
 
 sub sendline($$)
 {
