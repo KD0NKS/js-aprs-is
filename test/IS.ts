@@ -1,13 +1,14 @@
+/// <reference path="../node_modules/@types/node/index.d.ts" />
 import * as net from 'net';
 import 'mocha';
 import { expect } from 'chai';
 
-import IS from '../src/IS';
+import ISSocket from '../src/IS';
 
 describe('Tests for IS class', () => {
     describe('Test IS constructor.', () => {
         it('Should instantiate an IS instance using all possible default parameter values.', () => {
-            let connection = new IS('aprs.server.com', 12345);
+            let connection: ISSocket = new ISSocket('aprs.server.com', 12345);
 
             expect(connection.host).to.equal('aprs.server.com');
             expect(connection.port).to.equal(12345);
@@ -18,7 +19,7 @@ describe('Tests for IS class', () => {
         });
 
         it('Should instantiate an IS connection with given host, port, callsign, and appId.  All other values should default.', () => {
-            let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b');
+            let connection = new ISSocket('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b');
 
             expect(connection.host).to.equal('aprs.server.com');
             expect(connection.port).to.equal(12345);
@@ -29,7 +30,7 @@ describe('Tests for IS class', () => {
         });
 
         it('Should instantiate an IS connection with given host, port, callsign, filter, and appId.  All other values should default.', () => {
-            let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, 'f/*', 'foobar 42');
+            let connection = new ISSocket('aprs.server.com', 12345, 'N0CALL', undefined, 'f/*', 'foobar 42');
 
             expect(connection.host).to.equal('aprs.server.com');
             expect(connection.port).to.equal(12345);
@@ -40,7 +41,7 @@ describe('Tests for IS class', () => {
         });
 
         it('Should instantiate an IS connection with given host, port, callsign, filter, and appId.  All other values should default.', () => {
-            let connection = new IS('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2');
+            let connection = new ISSocket('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2');
 
             expect(connection.host).to.equal('aprs.server.com');
             expect(connection.port).to.equal(12345);
@@ -54,20 +55,20 @@ describe('Tests for IS class', () => {
 
     describe('Test UserLogin.', () => {
         it('Should return a user connection string with all default parameters and no filter.', () => {
-            let connection = new IS('aprs.server.com', 12345);
+            let connection = new ISSocket('aprs.server.com', 12345);
 
             expect(connection.userLogin).to.equal("user N0CALL pass -1 vers IS.js 0.01");
         });
 
         it('Should return a user connection string where all parameters including filter are specified.', () => {
-            let connection = new IS('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2');
+            let connection = new ISSocket('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2');
 
             expect(connection.userLogin).to.equal("user N0CALL pass 1234 vers myapp 1.2 filter f/*")
         });
     });
 
     describe('Test connect/disconnect', () => {
-        let connection: IS = new IS("localhost", 14580);
+        let connection: ISSocket = new ISSocket("localhost", 14580);
         let server: net.Server;
 
         before((done) => {
@@ -103,7 +104,7 @@ describe('Tests for IS class', () => {
     });
 
     describe('Test connect/disconnect and receiving data from the server', () => {
-        let connection: IS = new IS("localhost", 14580);
+        let connection: ISSocket = new ISSocket("localhost", 14580);
         let server: net.Server;
         let clientReceived: string[] = [];
         let serverReceived: string[] = [];

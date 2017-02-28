@@ -7,14 +7,13 @@
         "removeComments": true,
         "allowJs": false,
         "preserveConstEnums": true,
-        "outDir": "build/dist",
-        "sourceMap": true,
-        "declaration": true
+        "outDir": "lib/",
+        "declaration": true,
+        "sourceMap": true
     },
     "include": [
-        "src/**/*"
-        , "test/**/*"
+        "src/IS.ts"
     ],
-    "exclude": [ "bin", "node_modules" ],
+    "exclude": [ "bin", "node_modules", "lib" ],
     "atom": { "rewriteTsconfig": false }
 }

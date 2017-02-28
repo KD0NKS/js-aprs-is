@@ -1,4 +1,3 @@
-/// <reference> 'node_modules/@types/node/index.d.ts'
 import { Socket } from 'net';
 
 /**
@@ -25,7 +24,7 @@ import { Socket } from 'net';
  * @emits {event} data
  *
  * TODO: UPDATE USAGE EXAMPLE, ADD TO WIKI
- * let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b');
+ * let connection = new ISSocket('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b');
  *
  *   $is->connect('retryuntil' => 3) || die "Failed to connect: $is->{error}";
  *
@@ -52,7 +51,7 @@ const VERSION: string = '0.01';
 const MESSAGE_DELIMITER = '\r\n';
 const DISCONNECT_EVENTS: string[] = ['destroy', 'end', 'close', 'error', 'timeout'];
 
-export default class IS extends Socket {
+export default class ISSocket extends Socket {
     // not a fan of this... emit events instead? build it out to be a wrapper around null/readable/writable?
     private isSocketConnected: boolean;
 
@@ -164,12 +163,12 @@ export default class IS extends Socket {
 
         // TODO: do we care about format validation?
         // Trusting the calling appliation to handle this appropriately for now.
-        line = `line${MESSAGE_DELIMITER}`;
+        line = `${line}${MESSAGE_DELIMITER}`;
 
         this.emit('sending', line);
         this.emit('data', line);
 
-        super.write(line, 'utf8');
+        this.write(line, 'utf8');
     }
 
     /**

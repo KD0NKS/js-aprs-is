@@ -10,6 +10,20 @@ methods/functions.
 
 This project is only intended to communicate with JavAPRS-IS and APRS-C servers, not TNCs.
 
+## USAGE
+### npm (for now)
+npm install git://github.com/KD0NKS/js-aprs-is.git --save
+
+### typescript
+* import
+import ISSocket from 'js-aprs-is';
+
+* tsconfig.json
+"include": [
+    "src/IS.ts"
+]
+
+
 ## TO CONSIDER
 * Allow connections to IS server to automatically reconnect on failure?
   * The original client specified number of retries at a half second interval.

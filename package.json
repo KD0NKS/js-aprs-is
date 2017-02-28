@@ -2,7 +2,11 @@
   "name": "js-aprs-is",
   "version": "1.0.0",
   "description": "NodeJs library for connecting to an APRS-IS server.",
-  "main": "index.js",
+  "main": "./lib/IS.js",
+  "types": "./lib/IS.d.ts",
+  "files": [
+      "lib/"
+  ],
   "scripts": {
     "tsc": "tsc",
     "prepublish": "./node_modules/typescript/bin/tsc src/*.ts --module commonjs --moduleResolution node --target esnext",
@@ -27,8 +31,9 @@
     "@types/mocha": "^2.2.39",
     "@types/node": "^7.0.5",
     "chai": "^3.5.0",
-    "mocha": "^3.2.0",
-    "typescript": "^2.2.1"
+    "mocha": "^3.2.0"
   },
-  "dependencies": { }
+  "dependencies": {
+      "typescript": "^2.2.1"
+  }
 }
