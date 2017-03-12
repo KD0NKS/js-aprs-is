@@ -15,6 +15,13 @@ npm install git://github.com/KD0NKS/js-aprs-is.git --save
 * import
 import ISSocket from 'js-aprs-is';
 
+## KNOWN ISSUES
+* Buffer size causes messages to get split apart incorrectly at the beginning/end if too much data is received at one time.
+  * Helpful in code coverage testing.
+* Timeout should be implemented.
+  * Need to research timeout tollerance on APRS-IS servers.  30 seconds?
+  * On timeout event, socket should automatically send login message.
+
 ## TO CONSIDER
 * Allow connections to IS server to automatically reconnect on failure?
   * The original client specified number of retries at a half second interval.
