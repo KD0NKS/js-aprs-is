@@ -107,39 +107,45 @@ describe('Tests for IS class', () => {
         let connection: ISSocket = new ISSocket("localhost", 14580);
         let server: net.Server;
         let clientReceived: string[] = [];
+        let clientPacketsReceived: string[] = [];
         let serverReceived: string[] = [];
 
         before((done) => {
-            server = net.createServer((c) => {
-                c.write('test 1\r\n', 'utf8');
-                c.write('test 2\r\n', 'utf8');
-
-                c.on('data', (data) => {
+            server = net.createServer((socket) => {
+                socket.on('data', (data) => {
                     serverReceived.push(data.toString());
                 });
-            });
 
-            server.listen('14580', () => {
+                socket.write('test 1\r\n', 'utf8');
+                socket.write('test 2\r\ntest', 'utf8');
+                socket.write('3\r\n', 'utf8');
+            }).listen('14580', (data) => {
                 done();
             });
         });
 
         it('Client should successfully connect to server.', (done) => {
+            connection.setNoDelay(true);
+
             connection.on('data', (data) => {
                 clientReceived.push(data.toString());
             });
 
+            connection.on('packet', (data) => {
+                clientPacketsReceived.push(data.toString());
+            });
+
             connection.on('connect', () => {
-                this.write('test 1\r\n', 'utf8');
-                this.write('test 2\r\n', 'utf8');
-                this.write('test 3\r\n', 'utf8');
+                connection.write('test 2\r\n', 'utf8');
+                connection.write('test 1\r\n', 'utf8');
+                connection.write('test 3\r\n', 'utf8');
+
+                done();
             });
 
             connection.connect(() => {
                 expect(connection.isConnected).to.be.true;
             });
-
-            done();
         });
 
         it('Client should successfully disconnect from server.', (done) => {
@@ -150,12 +156,17 @@ describe('Tests for IS class', () => {
             done();
         });
 
-        it('Client should have received 2 messages.', () => {
-            clientReceived.length = 2;
+        it('Client should have received 1 message.', () => {
+            // technically 3 were sent, but the buffer size is big enough to handle all at the same time.
+            expect(clientReceived.length).equal(1);
         });
 
-        it('Server should have received 3 messages.', () => {
-            clientReceived.length = 3;
+        it('Client should have received 3 packets.', () => {
+            expect(clientPacketsReceived.length).equal(3);
+        });
+
+        it('Server should have received 1 message.', () => {
+            expect(serverReceived.length).equal(1);
         });
 
         after((done) => {
