@@ -50,8 +50,6 @@ connection.on('data', (data: Buffer) => {
 ```
 
 ## KNOWN ISSUES
-* Buffer size causes messages to get split apart incorrectly at the beginning/end if too much data is received at one time.
-  * Helpful in code coverage testing.
 * Timeout should be implemented.
   * Need to research timeout tollerance on APRS-IS servers.  30 seconds?
   * On timeout event, socket should automatically send login message.
