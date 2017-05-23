@@ -14,6 +14,29 @@ This project is only intended to communicate with JavAPRS-IS and APRS-C servers,
 ### npm (for now)
 npm install git://github.com/KD0NKS/js-aprs-is.git --save
 
+Extends NodeJS Socket, which means this is not guranteed to deliver one APRS packet per tcp packet.  Buffering must be implemented when using.
+
+``` javascript
+let bufferedData = '';
+let connection = new ISSocket("aprsserverurl", PORTNUMBER, "N0CALL", -1, FILTER);
+
+// Probably not the best way, but good enough for now.  Still consumes world feed on low end computer.
+connection.on('data', (data: Buffer) => {
+    bufferedData += data.toString();
+    let msgs = bufferedData.split('\r\n');
+
+    if(!bufferedData.endsWith('\r\n')) {
+        bufferedData = msgs[msgs.length - 1];
+        msgs = msgs.slice(0, -1);
+    } else {
+        bufferedData = '';
+        msgs = msgs.filter(msg => msg.trim() != '');
+    }
+
+    //...
+}
+```
+
 ### typescript
 * import
 import ISSocket from 'js-aprs-is';
@@ -27,6 +50,7 @@ import ISSocket from 'js-aprs-is';
 ## TO CONSIDER
 * Allow connections to IS server to automatically reconnect on failure?
   * The original client specified number of retries at a half second interval.
+  * Internal packet buffering to emit single packets?
 
 ## SEE ALSO
 
