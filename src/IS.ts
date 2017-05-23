@@ -22,6 +22,7 @@ import { Socket } from 'net';
  * @emits {event} socketError
  * @emits {event} socketEnd
  * @emits {event} data
+ * @emits {event} packet
  *
  * TODO: UPDATE USAGE EXAMPLE, ADD TO WIKI
  * let connection = new ISSocket('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b');
