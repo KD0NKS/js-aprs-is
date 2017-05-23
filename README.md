@@ -13,6 +13,21 @@ npm install git://github.com/KD0NKS/js-aprs-is.git --save
 
 Extends NodeJS Socket, which means this is not guranteed to deliver one APRS packet per tcp packet.  Buffering must be implemented when using.
 
+### TypeScript
+* import
+import ISSocket from 'js-aprs-is';
+
+### Using this the easy way:
+``` javascript
+let connection = new ISSocket("aprsserverurl", PORTNUMBER, "N0CALL", -1, FILTER);
+
+connection.on('packet', (data: string) => {
+    // ...
+});
+```
+
+### BYOB (Bring your own buffer):
+
 ``` javascript
 let bufferedData = '';
 let connection = new ISSocket("aprsserverurl", PORTNUMBER, "N0CALL", -1, FILTER);
@@ -33,10 +48,6 @@ connection.on('data', (data: Buffer) => {
     //...
 }
 ```
-
-### typescript
-* import
-import ISSocket from 'js-aprs-is';
 
 ## KNOWN ISSUES
 * Buffer size causes messages to get split apart incorrectly at the beginning/end if too much data is received at one time.

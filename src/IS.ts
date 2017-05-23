@@ -54,6 +54,7 @@ const DISCONNECT_EVENTS: string[] = ['destroy', 'end', 'close', 'error', 'timeou
 export default class ISSocket extends Socket {
     // not a fan of this... emit events instead? build it out to be a wrapper around null/readable/writable?
     private isSocketConnected: boolean;
+    private bufferedData: string;
 
     // TODO: auto reconnect?
     // check for empty callsign
@@ -88,9 +89,35 @@ export default class ISSocket extends Socket {
             ) {
 		super();
 
+        this.bufferedData = '';
         this.isSocketConnected = false;
 
         // TODO: Do we want to throw errors if the host, port, callsign, are null?
+
+        this.on('data', (data: Buffer) => {
+            //console.log(data.toString());
+
+            this.bufferedData += data.toString();
+            let msgs = this.bufferedData.split('\r\n');
+
+            if(!this.bufferedData.endsWith('\r\n')) {
+                this.bufferedData = msgs[msgs.length - 1];
+                msgs = msgs.slice(0, -1);
+            } else {
+                this.bufferedData = '';
+                msgs = msgs.filter(msg => msg.trim() != '');
+            }
+
+            msgs.forEach(msg => {
+                this.emit("packet", msg)
+            });
+        });
+
+        for(var e in DISCONNECT_EVENTS) {
+            this.on(e, () => {
+                this.isSocketConnected = false;
+            });
+        }
 	}
 
     /**
@@ -109,9 +136,7 @@ export default class ISSocket extends Socket {
             }
         });
 
-        for(var e in DISCONNECT_EVENTS) {
-            this.isSocketConnected = false;
-        }
+
 
         /*
         ##    *  Need to send on initial connect the following logon line:
