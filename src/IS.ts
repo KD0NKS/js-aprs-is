@@ -92,6 +92,7 @@ export default class ISSocket extends Socket {
 
         this.bufferedData = '';
         this.isSocketConnected = false;
+        this.setNoDelay(true);
 
         // TODO: Do we want to throw errors if the host, port, callsign, are null?
 
@@ -137,8 +138,6 @@ export default class ISSocket extends Socket {
             }
         });
 
-
-
         /*
         ##    *  Need to send on initial connect the following logon line:
         ##      user callsign pass passcode vers appname versionnum rest_of_line
@@ -183,14 +182,15 @@ export default class ISSocket extends Socket {
      * @param {string} line - Packet/message to send with <CR><LF> delimiter.
      */
     sendLine(line: string) {
-        if(!this.isConnected) {
-            throw new Error("Socket not connected.");
+        if(this.isSocketConnected === false) {
+            throw new Error('Socket not connected.');
         }
 
         // TODO: do we care about format validation?
         // Trusting the calling appliation to handle this appropriately for now.
         line = `${line}${MESSAGE_DELIMITER}`;
 
+        // Does it make sense to have a 'sending' and 'data' event?
         this.emit('sending', line);
         this.emit('data', line);
 

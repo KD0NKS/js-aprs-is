@@ -73,9 +73,7 @@ describe('Tests for IS class', () => {
 
         before((done) => {
             server = net.createServer((c) => {
-            });
-
-            server.listen('14580', () => {
+            }).listen(14580, () => {
                 done();
             });
         });
@@ -106,70 +104,66 @@ describe('Tests for IS class', () => {
     describe('Test connect/disconnect and receiving data from the server', () => {
         let connection: ISSocket = new ISSocket("localhost", 14580);
         let server: net.Server;
-        let clientReceived: string[] = [];
-        let clientPacketsReceived: string[] = [];
-        let serverReceived: string[] = [];
+        let clientData: string[] = [];
+        let clientPackets: string[] = [];
+        let serverData: string[] = [];
 
         before((done) => {
             server = net.createServer((socket) => {
                 socket.on('data', (data) => {
-                    serverReceived.push(data.toString());
+                    serverData.push(data.toString());
                 });
 
-                socket.write('test 1\r\n', 'utf8');
-                socket.write('test 2\r\ntest', 'utf8');
-                socket.write('3\r\n', 'utf8');
-            }).listen('14580', (data) => {
-                done();
-            });
-        });
-
-        it('Client should successfully connect to server.', (done) => {
-            connection.setNoDelay(true);
+                socket.write('from server 1\r\n');
+            }).listen(14580);
 
             connection.on('data', (data) => {
-                clientReceived.push(data.toString());
+                clientData.push(data.toString());
             });
 
             connection.on('packet', (data) => {
-                clientPacketsReceived.push(data.toString());
-            });
-
-            connection.on('connect', () => {
-                connection.write('test 2\r\n', 'utf8');
-                connection.write('test 1\r\n', 'utf8');
-                connection.write('test 3\r\n', 'utf8');
-
-                done();
-            });
-
-            connection.connect(() => {
-                expect(connection.isConnected).to.be.true;
-            });
-        });
-
-        it('Client should successfully disconnect from server.', (done) => {
-            connection.disconnect(() => {
-                expect(connection.isConnected).to.be.false;
+                clientPackets.push(data.toString());
             });
 
             done();
         });
 
-        it('Client should have received 1 message.', () => {
-            // technically 3 were sent, but the buffer size is big enough to handle all at the same time.
-            expect(clientReceived.length).equal(1);
+        it('Client should throw an error trying to send a packet when not connected.', (done) => {
+            expect(connection.sendLine.bind(connection, 'test 1')).to.throw('Socket not connected.');
+
+            done();
         });
 
-        it('Client should have received 3 packets.', () => {
-            expect(clientPacketsReceived.length).equal(3);
+        it('Client should successfully connect to server.', (done) => {
+            connection.connect(() => {
+                connection.sendLine('from client 1');
+
+                expect(connection.isConnected).to.be.true;
+            });
+
+            done();
         });
 
-        it('Server should have received 1 message.', () => {
-            expect(serverReceived.length).equal(1);
+        it('Client should recieve 2 piece of data.', (done) => {
+            expect(clientData.length).to.equal(2);
+
+            done();
+        });
+
+        it('Client should recieve 2 packet.', (done) => {
+            expect(clientPackets.length).to.equal(2);
+
+            done();
+        });
+
+        it('Server should recieve 1 piece of data.', (done) => {
+            expect(serverData.length).to.equal(1);
+
+            done();
         });
 
         after((done) => {
+            connection.disconnect();
             server.close();
 
             done();
