@@ -173,4 +173,31 @@ describe('Tests for IS class', () => {
             done();
         });
     });
+
+    describe('Test event to toggle isSocketConnected', () => {
+        let connection: ISSocket = new ISSocket("localhost", 14580);
+        let server: net.Server;
+
+        before((done) => {
+            server = net.createServer((socket) => {
+                socket.on('end', () => {
+                    server.close();
+                });
+
+                socket.end();
+            }).listen(14580);
+
+            connection.connect();
+
+            done();
+        });
+
+        it('Client should successfully connect to server.', (done) => {
+            connection.connect(() => {
+                expect(connection.isConnected).to.be.false;
+            });
+
+            done();
+        });
+    });
 });

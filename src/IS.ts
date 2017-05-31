@@ -117,6 +117,7 @@ export default class ISSocket extends Socket {
 
         for(var e in DISCONNECT_EVENTS) {
             this.on(e, () => {
+                // Tested, but does not show up in reports as such.
                 this.isSocketConnected = false;
             });
         }
