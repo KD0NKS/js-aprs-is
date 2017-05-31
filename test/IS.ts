@@ -114,7 +114,11 @@ describe('Tests for IS class', () => {
                     serverData.push(data.toString());
                 });
 
-                socket.write('from server 1\r\n');
+                socket.write('from server 1\r\nfrom server 2\r\nfrom server 3\r\n from ');
+                socket.write('server 4\r\nfrom server 5\r\nfrom server 6\r\n from ');
+                socket.write('server 7\r\nfrom server 8\r\nfrom server 9\r\n from ');
+                socket.write('server 10\r\nfrom server 11\r\nfrom server 12\r\n from ');
+                socket.write('server 13\r\nfrom server 14\r\nfrom server 15\r\n from ');
             }).listen(14580);
 
             connection.on('data', (data) => {
@@ -144,14 +148,14 @@ describe('Tests for IS class', () => {
             done();
         });
 
-        it('Client should recieve 2 piece of data.', (done) => {
+        it('Client should recieve 2 pieces of data.', (done) => {
             expect(clientData.length).to.equal(2);
 
             done();
         });
 
-        it('Client should recieve 2 packet.', (done) => {
-            expect(clientPackets.length).to.equal(2);
+        it('Client should recieve 16 packets.', (done) => {
+            expect(clientPackets.length).to.equal(16);
 
             done();
         });
