@@ -2,16 +2,14 @@
   "name": "js-aprs-is",
   "version": "1.0.0",
   "description": "NodeJs library for connecting to an APRS-IS server.",
-  "main": "./lib/IS.js",
-  "types": "./lib/IS.d.ts",
+  "main": "./dist/src/IS.js",
+  "types": "./dist/src/IS.d.ts",
   "files": [
-      "lib/"
+    "dist/"
   ],
   "scripts": {
-    "tsc": "tsc",
-    "prepublish": "tsc src/*.ts --module commonjs --moduleResolution node --target esnext",
-    "pretest": "tsc test/*.ts --module commonjs --moduleResolution node --target esnext",
-    "test": "istanbul cover _mocha"
+    "build": "./node_modules/.bin/tsc",
+    "test": "npm run build && nyc --reporter=text --reporter=lcov mocha dist/test/**/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -27,14 +25,14 @@
   "author": "afairhurst",
   "license": "ISC",
   "devDependencies": {
-    "@types/chai": "^3.4.35",
-    "@types/mocha": "^2.2.39",
-    "@types/node": "^7.0.5",
-    "chai": "^3.5.0",
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.12.15",
+    "chai": "^4.2.0",
     "istanbul": "^0.4.5",
-    "mocha": "^3.2.0"
+    "mocha": "^5.2.0"
   },
   "dependencies": {
-      "typescript": "^2.2.1"
+    "typescript": "^3.2.2"
   }
 }
