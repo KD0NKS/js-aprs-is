@@ -53,6 +53,7 @@ connection.on('data', (data: Buffer) => {
 * Timeout should be implemented.
   * Need to research timeout tollerance on APRS-IS servers.  30 seconds?
   * On timeout event, socket should automatically send login message.
+  * Hook tests fail due to async issues.
 
 ## TO CONSIDER
 * Allow connections to IS server to automatically reconnect on failure?
