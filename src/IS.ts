@@ -121,8 +121,8 @@ export default class ISSocket extends Socket {
                 this.isSocketConnected = false;
             });
         }
-	}
-
+    }
+    
     /**
      * Connects to the server.
      *
@@ -130,7 +130,7 @@ export default class ISSocket extends Socket {
      *
      * @example connection.connect()
      */
-	connect(callback?: any): void { //sub connect($;%)
+	connect(callback?: any): any { //sub connect($;%)
         super.connect(this.port, this.host, () => {
             this.isSocketConnected = true;
 
