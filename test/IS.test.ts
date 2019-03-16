@@ -1,9 +1,10 @@
-/// <reference path="../node_modules/@types/node/index.d.ts" />
 import * as net from 'net';
-import 'mocha';
-import { expect } from 'chai';
-
+import * as chai from 'chai';
 import ISSocket from '../src/IS';
+
+const assert = require('assert');
+const expect = chai.expect;
+const should = chai.should;
 
 describe('Tests for IS class', () => {
     describe('Test IS constructor.', () => {
