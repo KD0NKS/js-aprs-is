@@ -62,18 +62,11 @@ connection.on('data', (data: Buffer) => {
 
 ## SEE ALSO
 
+* [js-aprs-fap](https://github.com/KD0NKS/js-aprs-fap)
 * [perl-aprs-fap](https://github.com/hessu/perl-aprs-fap)
 * [C library port of Ham::APRS::FAP](http://pakettiradio.net/libfap/)
 * [Python bindings for libfap](http://github.com/kd7lxl/python-libfap)
 
 ## COPYRIGHT AND LICENCE
 
-Copyright(c) 2017 Andrew Fairhurst
-
-### ORIGINAL COPYRIGHT
-
-* Copyright (C) 2005-2012 Tapio Sokura
-* Copyright (C) 2007-2012 Heikki Hannikainen @hessu
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
+Copyright(c) 2019 Andrew Fairhurst
