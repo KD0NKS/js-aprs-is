@@ -8,6 +8,9 @@ This project will attempt to provide a node version of the perl-aprs-fap/HAM::AP
 * This project only provides ability to connect to an APRS-IS server.  Parsing functionality will be provided by another library.
 
 ## USAGE
+### Demo
+https://github.com/KD0NKS/aprs-is-demo
+
 ### npm (for now)
 npm install git://github.com/KD0NKS/js-aprs-is.git --save
 
