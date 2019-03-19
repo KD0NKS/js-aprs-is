@@ -1,5 +1,5 @@
-import IS from './src/IS';
+import ISSocket from './src/IS';
 
 export {
-    IS
+    ISSocket
 }

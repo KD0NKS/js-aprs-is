@@ -12,10 +12,6 @@ import { Socket } from 'net';
  * - Because node is event based, data is pushed rather than pulled; parent must subscribe to events.
  * - Stand alone module from perl-aprs-fap.  Allows a user to utilize any parser they chose.
  *
- * @author Andrew Fairhurst, KD0NKS
- *
- * @copyright 2017 by Andrew Fairhurst
- *
  * This library is free software; you can redistribute it and/or modify
  * it under the same terms as Perl itself.
  *
@@ -122,7 +118,7 @@ export default class ISSocket extends Socket {
             });
         }
     }
-    
+
     /**
      * Connects to the server.
      *
