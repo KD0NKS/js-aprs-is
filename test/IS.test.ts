@@ -4,7 +4,6 @@ import ISSocket from '../src/IS';
 
 const assert = require('assert');
 const expect = chai.expect;
-const should = chai.should;
 
 describe('Tests for IS class', () => {
     describe('Test IS constructor.', () => {
@@ -68,7 +67,6 @@ describe('Tests for IS class', () => {
         });
     });
 
-
     describe('Test connect/disconnect', () => {
         let connection: ISSocket = new ISSocket("localhost", 14580);
         let server: net.Server;
@@ -80,9 +78,8 @@ describe('Tests for IS class', () => {
             });
         });
 
-        it('Client should report not being connected to server.', (done) => {
+        it('Client should report not being connected to server.', () => {
             assert.equal(false, connection.isConnected());
-            done();
         });
 
         it('Client should successfully connect to server.', (done) => {
@@ -103,10 +100,9 @@ describe('Tests for IS class', () => {
         });
         */
 
-        after((done) => {
+        after(() => {
+            connection.disconnect();
             server.close();
-
-            done();
         });
     });
 
@@ -141,10 +137,8 @@ describe('Tests for IS class', () => {
             });
         });
 
-        it('Client should throw an error trying to send a packet when not connected.', (done) => {
+        it('Client should throw an error trying to send a packet when not connected.', () => {
             expect(connection.sendLine.bind(connection, 'test 1')).to.throw('Socket not connected.');
-
-            done();
         });
 
         it('Client should successfully connect to server.', (done) => {
@@ -155,29 +149,21 @@ describe('Tests for IS class', () => {
             });
         });
 
-        it('Client should recieve 2 pieces of data.', (done) => {
+        it('Client should recieve 2 pieces of data.', () => {
             expect(clientData.length).to.equal(2);
-
-            done();
         });
 
-        it('Client should recieve 16 packets.', (done) => {
+        it('Client should recieve 16 packets.', () => {
             expect(clientPackets.length).to.equal(16);
-
-            done();
         });
 
-        it('Server should recieve 1 piece of data.', (done) => {
+        it('Server should recieve 1 piece of data.', () => {
             expect(serverData.length).to.equal(1);
-
-            done();
         });
 
-        after((done) => {
+        after(() => {
             connection.disconnect();
             server.close();
-
-            done();
         });
     });
 
