@@ -48,7 +48,7 @@ const VERSION: string = '0.01';
 const MESSAGE_DELIMITER = '\r\n';
 const DISCONNECT_EVENTS: string[] = ['destroy', 'end', 'close', 'error', 'timeout'];
 
-export default class ISSocket extends Socket {
+export class ISSocket extends Socket {
     // not a fan of this... emit events instead? build it out to be a wrapper around null/readable/writable?
     private isSocketConnected: boolean;
     private bufferedData: string;
