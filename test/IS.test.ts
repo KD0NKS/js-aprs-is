@@ -119,7 +119,7 @@ describe('Tests for IS class', () => {
                 clientData.push(data.toString());
             });
 
-            connection.on('packet', (data : Buffer) => {
+            connection.on('packet', (data: Buffer) => {
                 clientPackets.push(data.toString());
             });
 
