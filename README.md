@@ -4,8 +4,8 @@ APRS is a registered trademark Bob Bruninga, WB4APR.
 
 This project will attempt to provide a node version of the perl-aprs-fap/HAM::APRS::FAP IS class/module.  Over time, it is likely this will diverge from the original code due to platforms, but will attempt to keep usage straightforward and similar where applicable.  The biggest difference will be the usage of a push rather than pull paradigm, which will also negate the need for some methods/functions.
 
-  * This project is only intended to communicate with JavAPRS-IS and APRS-C servers, not TNCs.
-  * This project only provides ability to connect to an APRS-IS server.  Parsing functionality will be provided by another library.
+* This project is only intended to communicate with JavAPRS-IS and APRS-C servers, not TNCs.
+* This project only provides ability to connect to an APRS-IS server.  Parsing functionality will be provided by another library.
 
 ## USAGE
 ### Demo
@@ -17,7 +17,7 @@ npm install git://github.com/KD0NKS/js-aprs-is.git --save
 Extends NodeJS Socket, which means this is not guranteed to deliver one APRS packet per tcp packet.  Buffering must be implemented when using.
 
 ### TypeScript
-  * import
+* import
 import ISSocket from 'js-aprs-is';
 
 ### Using this the easy way
