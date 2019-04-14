@@ -8,7 +8,7 @@ import { Socket } from 'net';
  * and to read and write lines on the connection.
  *
  * What's different betweent this and perl-aprs-fap?
- * - No method that could possibly generate a passcode for a given callsign.
+ * - No method that could generate a passcode for a given callsign.
  * - Because node is event based, data is pushed rather than pulled; parent must subscribe to events.
  * - Stand alone module from perl-aprs-fap.  Allows a user to utilize any parser they chose.
  *
@@ -19,30 +19,6 @@ import { Socket } from 'net';
  * @emits {event} socketEnd
  * @emits {event} data
  * @emits {event} packet
- *
- * TODO: UPDATE USAGE EXAMPLE, ADD TO WIKI
- * let connection = new ISSocket('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b');
- *
- *   $is->connect('retryuntil' => 3) || die "Failed to connect: $is->{error}";
- *
- * for (my $i = 0; $i < 10; $i += 1) {
- *       my $l = $is->getline_noncomment();
- *       next if (!defined $l);
- *       print "\n--- new packet ---\n$l\n";
- *
- *       my %packetdata;
- *       my $retval = parseaprs($l, \%packetdata);
- *
- *       if ($retval == 1) {
- *           while (my ($key, $value) = each(%packetdata)) {
- *               print "$key: $value\n";
- *           }
- *       } else {
- *           warn "Parsing failed: $packetdata{resultmsg} ($packetdata{resultcode})\n";
- *       }
- *   }
- *
- *   $is->disconnect() || die "Failed to disconnect: $is->{error}";
  */
 const VERSION: string = '0.01';
 const MESSAGE_DELIMITER = '\r\n';
@@ -84,7 +60,7 @@ export class ISSocket extends Socket {
             , public filter?: string
             , public appId = `IS.js ${VERSION}` // (appname and versionnum should not exceed 15 characters)
             ) {
-		super();
+        super();
 
         this.bufferedData = '';
         this.isSocketConnected = false;
@@ -126,7 +102,7 @@ export class ISSocket extends Socket {
      *
      * @example connection.connect()
      */
-	public connect(callback?: any): any { //sub connect($;%)
+	public connect(callback?: any): any {
         super.connect(this.port, this.host, () => {
             this.isSocketConnected = true;
 
@@ -163,7 +139,7 @@ export class ISSocket extends Socket {
      *
      * @example connection.disconnect();
      */
-	public disconnect(callback?: any) {
+	public disconnect(callback?: any): any {
         super.end("", () => {
             if(callback) {
                 callback();
@@ -178,7 +154,7 @@ export class ISSocket extends Socket {
      *
      * @param {string} line - Packet/message to send with <CR><LF> delimiter.
      */
-    public sendLine(line: string) {
+    public sendLine(line: string): void {
         if(this.isSocketConnected === false) {
             throw new Error('Socket not connected.');
         }
