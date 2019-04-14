@@ -1,7 +1,7 @@
 import assert from 'assert';
 import * as net from 'net';
 import * as chai from 'chai';
-import ISSocket from '../src/IS';
+import { ISSocket } from '../src/IS';
 
 const expect = chai.expect;
 
@@ -108,17 +108,18 @@ describe('Tests for IS class', () => {
 
     describe('Test connect/disconnect and receiving data from the server', () => {
         const connection: ISSocket = new ISSocket("localhost", 14580);
+        const clientData: string[] = [];
+        const clientPackets: string[] = [];
+        const serverData: string[] = [];
+
         let server: net.Server;
-        let clientData: string[] = [];
-        let clientPackets: string[] = [];
-        let serverData: string[] = [];
 
         before((done) => {
             connection.on('data', (data) => {
                 clientData.push(data.toString());
             });
 
-            connection.on('packet', (data : any) => {
+            connection.on('packet', (data : Buffer) => {
                 clientPackets.push(data.toString());
             });
 
