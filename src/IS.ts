@@ -79,8 +79,8 @@ export class ISSocket extends Socket {
     // parameters should be used anyway.
 	constructor(public host: string
             , public port: number
-            , public callsign = "N0CALL"
-            , public passcode = -1
+            , public callsign:string = "N0CALL"
+            , public passcode:number = -1
             , public filter?: string
             , public appId = `IS.js ${VERSION}` // (appname and versionnum should not exceed 15 characters)
             ) {
@@ -126,7 +126,7 @@ export class ISSocket extends Socket {
      *
      * @example connection.connect()
      */
-	connect(callback?: any): any { //sub connect($;%)
+	public connect(callback?: any): any { //sub connect($;%)
         super.connect(this.port, this.host, () => {
             this.isSocketConnected = true;
 
@@ -163,7 +163,7 @@ export class ISSocket extends Socket {
      *
      * @example connection.disconnect();
      */
-	disconnect(callback?: any) {
+	public disconnect(callback?: any) {
         super.end("", () => {
             if(callback) {
                 callback();
@@ -178,7 +178,7 @@ export class ISSocket extends Socket {
      *
      * @param {string} line - Packet/message to send with <CR><LF> delimiter.
      */
-    sendLine(line: string) {
+    public sendLine(line: string) {
         if(this.isSocketConnected === false) {
             throw new Error('Socket not connected.');
         }
@@ -201,7 +201,7 @@ export class ISSocket extends Socket {
      *
      * @example connection.isConnected()
      */
-	isConnected(): boolean {
+	public isConnected(): boolean {
         // use socket.writeable instead?
         return this.isSocketConnected === true;
     };
