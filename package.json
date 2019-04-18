@@ -4,9 +4,6 @@
   "description": "NodeJs library for connecting to an APRS-IS server.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist/"
-  ],
   "scripts": {
     "build": "tsc",
     "setup": "npm install",
@@ -31,7 +28,6 @@
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
-    "@types/node": "^11.12.2",
     "chai": "^4.2.0",
     "coveralls": "^3.0.3",
     "istanbul": "^0.4.5",
@@ -40,5 +36,7 @@
     "nyc": "^13.3.0",
     "typescript": "^3.3.3333"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@types/node": "^11.12.2"
+  }
 }
