@@ -1,4 +1,4 @@
-# js-aprs-is [![Build Status](https://travis-ci.org/KD0NKS/js-aprs-is.svg?branch=master)](https://travis-ci.org/KD0NKS/js-aprs-is) [![Coverage Status](https://coveralls.io/repos/github/KD0NKS/js-aprs-is/badge.svg?branch=master)](https://coveralls.io/github/KD0NKS/js-aprs-is?branch=master) [![Greenkeeper badge](https://badges.greenkeeper.io/KD0NKS/js-aprs-is.svg)](https://greenkeeper.io/)
+# js-aprs-is [![Build Status](https://travis-ci.org/KD0NKS/js-aprs-is.svg?branch=master)](https://travis-ci.org/KD0NKS/js-aprs-is) [![Coverage Status](https://coveralls.io/repos/github/KD0NKS/js-aprs-is/badge.svg?branch=master)](https://coveralls.io/github/KD0NKS/js-aprs-is?branch=master) [![Greenkeeper badge](https://badges.greenkeeper.io/KD0NKS/js-aprs-is.svg)](https://greenkeeper.io/) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/afd6ae751d31433c8314c940f79afd01)](https://www.codacy.com/app/KD0NKS/js-aprs-is?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KD0NKS/js-aprs-is&amp;utm_campaign=Badge_Grade)
 
 APRS is a registered trademark Bob Bruninga, WB4APR.
 
@@ -9,7 +9,7 @@ This project will attempt to provide a node version of the perl-aprs-fap/HAM::AP
 
 ## USAGE
 ### Demo
-https://github.com/KD0NKS/aprs-is-demo
+[https://github.com/KD0NKS/aprs-is-demo](https://github.com/KD0NKS/aprs-is-demo)
 
 ### npm (for now)
 npm install git://github.com/KD0NKS/js-aprs-is.git --save
@@ -20,7 +20,7 @@ Extends NodeJS Socket, which means this is not guranteed to deliver one APRS pac
 * import
 import ISSocket from 'js-aprs-is';
 
-### Using this the easy way:
+### Using this the easy way
 ``` javascript
 let connection = new ISSocket("aprsserverurl", PORTNUMBER, "N0CALL", -1, FILTER);
 
@@ -29,7 +29,7 @@ connection.on('packet', (data: string) => {
 });
 ```
 
-### BYOB (Bring your own buffer):
+### BYOB (Bring your own buffer)
 
 ``` javascript
 let bufferedData = '';

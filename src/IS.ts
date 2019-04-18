@@ -8,7 +8,7 @@ import { Socket } from 'net';
  * and to read and write lines on the connection.
  *
  * What's different betweent this and perl-aprs-fap?
- * - No method that could possibly generate a passcode for a given callsign.
+ * - No method that could generate a passcode for a given callsign.
  * - Because node is event based, data is pushed rather than pulled; parent must subscribe to events.
  * - Stand alone module from perl-aprs-fap.  Allows a user to utilize any parser they chose.
  *
@@ -19,36 +19,12 @@ import { Socket } from 'net';
  * @emits {event} socketEnd
  * @emits {event} data
  * @emits {event} packet
- *
- * TODO: UPDATE USAGE EXAMPLE, ADD TO WIKI
- * let connection = new ISSocket('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b');
- *
- *   $is->connect('retryuntil' => 3) || die "Failed to connect: $is->{error}";
- *
- * for (my $i = 0; $i < 10; $i += 1) {
- *       my $l = $is->getline_noncomment();
- *       next if (!defined $l);
- *       print "\n--- new packet ---\n$l\n";
- *
- *       my %packetdata;
- *       my $retval = parseaprs($l, \%packetdata);
- *
- *       if ($retval == 1) {
- *           while (my ($key, $value) = each(%packetdata)) {
- *               print "$key: $value\n";
- *           }
- *       } else {
- *           warn "Parsing failed: $packetdata{resultmsg} ($packetdata{resultcode})\n";
- *       }
- *   }
- *
- *   $is->disconnect() || die "Failed to disconnect: $is->{error}";
  */
 const VERSION: string = '0.01';
-const MESSAGE_DELIMITER = '\r\n';
+const MESSAGE_DELIMITER: string = '\r\n';
 const DISCONNECT_EVENTS: string[] = ['destroy', 'end', 'close', 'error', 'timeout'];
 
-export default class ISSocket extends Socket {
+export class ISSocket extends Socket {
     // not a fan of this... emit events instead? build it out to be a wrapper around null/readable/writable?
     private isSocketConnected: boolean;
     private bufferedData: string;
@@ -58,7 +34,7 @@ export default class ISSocket extends Socket {
     // check for empty host
     // check for empty appid
 
-	/**
+    /**
      * Initializes a new JS-APRS-IS socket. Takes two mandatory arguments,
      * the host and port to connect to and your client's callsign, and one or more
      * optional named options:
@@ -74,17 +50,17 @@ export default class ISSocket extends Socket {
      * @example let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b');
      * @example let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, 'f/*', 'foobar 42');
      * @example let connection = new IS('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2', true);
-	 */
+    */
     // Don't provide multiple constructors.  Passing undefined parameters is annoying, but ideally, most, if not all
     // parameters should be used anyway.
-	constructor(public host: string
+    constructor(public host: string
             , public port: number
-            , public callsign = "N0CALL"
-            , public passcode = -1
+            , public callsign: string = "N0CALL"
+            , public passcode: number = -1
             , public filter?: string
-            , public appId = `IS.js ${VERSION}` // (appname and versionnum should not exceed 15 characters)
+            , public appId: string = `IS.js ${VERSION}` // (appname and versionnum should not exceed 15 characters)
             ) {
-		super();
+        super();
 
         this.bufferedData = '';
         this.isSocketConnected = false;
@@ -126,7 +102,7 @@ export default class ISSocket extends Socket {
      *
      * @example connection.connect()
      */
-	connect(callback?: any): any { //sub connect($;%)
+    public connect(callback?: any): any {
         super.connect(this.port, this.host, () => {
             this.isSocketConnected = true;
 
@@ -134,6 +110,8 @@ export default class ISSocket extends Socket {
                 callback();
             }
         });
+
+        return this;
 
         /*
         ##    *  Need to send on initial connect the following logon line:
@@ -161,10 +139,12 @@ export default class ISSocket extends Socket {
      * Disconnects from the server.
      * Wrapper method for net.Socket.end() method.
      *
+     * TODO: deprecate and implement end instead.
+     *
      * @example connection.disconnect();
      */
-	disconnect(callback?: any) {
-        super.end("", () => {
+    public disconnect(callback?: any): any {
+        return super.end("", () => {
             if(callback) {
                 callback();
             }
@@ -178,20 +158,20 @@ export default class ISSocket extends Socket {
      *
      * @param {string} line - Packet/message to send with <CR><LF> delimiter.
      */
-    sendLine(line: string) {
+    public sendLine(line: string): void {
         if(this.isSocketConnected === false) {
             throw new Error('Socket not connected.');
         }
 
         // TODO: do we care about format validation?
         // Trusting the calling appliation to handle this appropriately for now.
-        line = `${line}${MESSAGE_DELIMITER}`;
+        const data = `${line}${MESSAGE_DELIMITER}`;
 
         // Does it make sense to have a 'sending' and 'data' event?
-        this.emit('sending', line);
-        this.emit('data', line);
+        this.emit('sending', data);
+        this.emit('data', data);
 
-        this.write(line, 'utf8');
+        this.write(data, 'utf8');
     }
 
     /**
@@ -201,7 +181,7 @@ export default class ISSocket extends Socket {
      *
      * @example connection.isConnected()
      */
-	isConnected(): boolean {
+    public isConnected(): boolean {
         // use socket.writeable instead?
         return this.isSocketConnected === true;
     };
