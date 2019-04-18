@@ -21,7 +21,7 @@ import { Socket } from 'net';
  * @emits {event} packet
  */
 const VERSION: string = '0.01';
-const MESSAGE_DELIMITER = '\r\n';
+const MESSAGE_DELIMITER: string = '\r\n';
 const DISCONNECT_EVENTS: string[] = ['destroy', 'end', 'close', 'error', 'timeout'];
 
 export class ISSocket extends Socket {
@@ -111,6 +111,8 @@ export class ISSocket extends Socket {
             }
         });
 
+        return this;
+
         /*
         ##    *  Need to send on initial connect the following logon line:
         ##      user callsign pass passcode vers appname versionnum rest_of_line
@@ -137,10 +139,12 @@ export class ISSocket extends Socket {
      * Disconnects from the server.
      * Wrapper method for net.Socket.end() method.
      *
+     * TODO: deprecate and implement end instead.
+     *
      * @example connection.disconnect();
      */
 	public disconnect(callback?: any): any {
-        super.end("", () => {
+        return super.end("", () => {
             if(callback) {
                 callback();
             }
@@ -161,13 +165,13 @@ export class ISSocket extends Socket {
 
         // TODO: do we care about format validation?
         // Trusting the calling appliation to handle this appropriately for now.
-        line = `${line}${MESSAGE_DELIMITER}`;
+        const data = `${line}${MESSAGE_DELIMITER}`;
 
         // Does it make sense to have a 'sending' and 'data' event?
-        this.emit('sending', line);
-        this.emit('data', line);
+        this.emit('sending', data);
+        this.emit('data', data);
 
-        this.write(line, 'utf8');
+        this.write(data, 'utf8');
     }
 
     /**
