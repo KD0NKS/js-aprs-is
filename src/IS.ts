@@ -58,7 +58,7 @@ export class ISSocket extends Socket {
             , public callsign:string = "N0CALL"
             , public passcode:number = -1
             , public filter?: string
-            , public appId = `IS.js ${VERSION}` // (appname and versionnum should not exceed 15 characters)
+            , public appId: string = `IS.js ${VERSION}` // (appname and versionnum should not exceed 15 characters)
             ) {
         super();
 
