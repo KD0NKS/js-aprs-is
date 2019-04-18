@@ -34,7 +34,7 @@ export class ISSocket extends Socket {
     // check for empty host
     // check for empty appid
 
-	/**
+    /**
      * Initializes a new JS-APRS-IS socket. Takes two mandatory arguments,
      * the host and port to connect to and your client's callsign, and one or more
      * optional named options:
@@ -50,13 +50,13 @@ export class ISSocket extends Socket {
      * @example let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b');
      * @example let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, 'f/*', 'foobar 42');
      * @example let connection = new IS('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2', true);
-	 */
+    */
     // Don't provide multiple constructors.  Passing undefined parameters is annoying, but ideally, most, if not all
     // parameters should be used anyway.
-	constructor(public host: string
+    constructor(public host: string
             , public port: number
-            , public callsign:string = "N0CALL"
-            , public passcode:number = -1
+            , public callsign: string = "N0CALL"
+            , public passcode: number = -1
             , public filter?: string
             , public appId: string = `IS.js ${VERSION}` // (appname and versionnum should not exceed 15 characters)
             ) {
@@ -102,7 +102,7 @@ export class ISSocket extends Socket {
      *
      * @example connection.connect()
      */
-	public connect(callback?: any): any {
+    public connect(callback?: any): any {
         super.connect(this.port, this.host, () => {
             this.isSocketConnected = true;
 
@@ -143,7 +143,7 @@ export class ISSocket extends Socket {
      *
      * @example connection.disconnect();
      */
-	public disconnect(callback?: any): any {
+    public disconnect(callback?: any): any {
         return super.end("", () => {
             if(callback) {
                 callback();
@@ -181,7 +181,7 @@ export class ISSocket extends Socket {
      *
      * @example connection.isConnected()
      */
-	public isConnected(): boolean {
+    public isConnected(): boolean {
         // use socket.writeable instead?
         return this.isSocketConnected === true;
     };
