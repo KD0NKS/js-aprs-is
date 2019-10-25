@@ -8,3 +8,5 @@ before_script:
 - npm run setup
 script:
 - npm run test-report
+after_success:
+- npm run coverage

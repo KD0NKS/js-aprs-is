@@ -8,8 +8,7 @@
     "build": "tsc",
     "setup": "npm install",
     "test": "npm run build && nyc --reporter=text --reporter=lcov mocha dist/test/**/*.test.js",
-    "test-only": "mocha dist/test/**/*.test.js",
-    "test-report": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "tsc": "./node_modules/.bin/tsc"
   },
   "repository": {
