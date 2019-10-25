@@ -26,16 +26,16 @@
   "author": "afairhurst",
   "license": "ISC",
   "devDependencies": {
-    "@types/chai": "^4.1.7",
-    "@types/mocha": "^5.2.6",
+    "@types/chai": "^4.2.4",
+    "@types/mocha": "^5.2.7",
     "chai": "^4.2.0",
     "coveralls": "^3.0.7",
-    "mocha": "^6.0.2",
+    "mocha": "^6.2.2",
     "mocha-lcov-reporter": "^1.3.0",
     "nyc": "^14.1.1",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.6.4"
   },
   "dependencies": {
-    "@types/node": "^12.11.0"
+    "@types/node": "^12.11.7"
   }
 }
