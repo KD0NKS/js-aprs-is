@@ -6,6 +6,5 @@ node_js:
 - "12"
 before_script:
 - npm run setup
-- npm run build
 script:
 - npm run test-report
