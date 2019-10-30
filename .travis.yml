@@ -4,9 +4,16 @@ node_js:
 - "8"
 - "10"
 - "12"
+
+cache: npm
+before_install:
+- npm install -g greenkeeper-lockfile
 before_script:
 - npm run setup
+- npm run build
+- greenkeeper-lockfile-update
 script:
 - npm run test
 after_success:
 - npm run coverage
+after_script: greenkeeper-lockfile-upload
