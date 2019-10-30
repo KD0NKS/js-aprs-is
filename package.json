@@ -1,7 +1,32 @@
 {
+  "author": "afairhurst",
+  "license": "ISC",
   "name": "js-aprs-is",
   "version": "0.0.1",
+  "homepage": "https://github.com/KD0NKS/js-aprs-is",
   "description": "NodeJs library for connecting to an APRS-IS server.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KD0NKS/js-aprs-is.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KD0NKS/js-aprs-is/issues"
+  },
+  "nyc": {
+    "extends": "@istanbuljs/nyc-config-typescript",
+    "all": true,
+    "reporter": [
+      "text",
+      "lcov"
+    ]
+  },
+  "keywords": [
+    "APRS",
+    "APRS-IS",
+    "APRSC",
+    "ham radio",
+    "amateur radio"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -11,19 +36,6 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "tsc": "./node_modules/.bin/tsc"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/KD0NKS/js-aprs-is.git"
-  },
-  "keywords": [
-    "APRS",
-    "APRS-IS",
-    "APRSC",
-    "ham radio",
-    "amateur radio"
-  ],
-  "author": "afairhurst",
-  "license": "ISC",
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^0.1.3",
     "@types/chai": "^4.2.4",
