@@ -1,4 +1,4 @@
-import { ISSocket } from './src/IS';
+import { ISSocket } from './src/ISSocket';
 
 export {
     ISSocket
