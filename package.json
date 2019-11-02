@@ -2,12 +2,12 @@
   "author": "afairhurst",
   "license": "ISC",
   "name": "js-aprs-is",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "homepage": "https://github.com/KD0NKS/js-aprs-is",
   "description": "NodeJs library for connecting to an APRS-IS server.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/KD0NKS/js-aprs-is.git"
+    "url": "git+https://github.com/KD0NKS/js-aprs-is.git"
   },
   "bugs": {
     "url": "https://github.com/KD0NKS/js-aprs-is/issues"
@@ -27,14 +27,17 @@
     "ham radio",
     "amateur radio"
   ],
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
-    "build": "tsc",
+    "tsc": "./node_modules/.bin/tsc",
     "setup": "npm install",
+    "build": "tsc",
     "test": "nyc mocha",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "tsc": "./node_modules/.bin/tsc"
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^0.1.3",

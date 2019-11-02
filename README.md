@@ -11,8 +11,8 @@ This project will attempt to provide a node version of the perl-aprs-fap/HAM::AP
 ### Demo
 [https://github.com/KD0NKS/aprs-is-demo](https://github.com/KD0NKS/aprs-is-demo)
 
-### npm (for now)
-npm install git://github.com/KD0NKS/js-aprs-is.git --save
+### npm
+npm install js-aprs-is --save
 
 Extends NodeJS Socket, which means this is not guranteed to deliver one APRS packet per tcp packet.  Buffering must be implemented when using.
 

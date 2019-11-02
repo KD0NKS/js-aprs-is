@@ -20,7 +20,7 @@ import { Socket } from 'net';
  * @emits {event} data
  * @emits {event} packet
  */
-const VERSION: string = '0.01';
+const VERSION: string = '1.0.0';
 const MESSAGE_DELIMITER: string = '\r\n';
 const DISCONNECT_EVENTS: string[] = ['destroy', 'end', 'close', 'error', 'timeout'];
 
@@ -44,7 +44,7 @@ export class ISSocket extends Socket {
      * @param {string} [callsign=N0CALL] - Your station's callsign.
      * @param {number} [passcode=-1] - An APRS-IS passcode.
      * @param {string} [filter] - An APRS-IS filter string sent to the server.
-     * @param {string} [appid=IS.js 0.01] - Your application's name and version number direction finding. Should not exceed 15 characters.
+     * @param {string} [appid=IS.js 1.0.0] - Your application's name and version number direction finding. Should not exceed 15 characters.
      *
      * @example let connection = new IS('aprs.server.com', 12345);
      * @example let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b');
