@@ -196,6 +196,4 @@ export class ISSocket extends Socket {
         return `user ${this.callsign} pass ${this.passcode} vers ${this.appId}`
                 + ((this.filter == undefined || !this.filter) ? '' : ` filter ${this.filter}`);
     }
-}
-
-export default ISSocket;
+};
