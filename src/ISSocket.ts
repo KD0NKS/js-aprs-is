@@ -20,7 +20,7 @@ import { Socket } from 'net';
  * @emits {event} data
  * @emits {event} packet
  */
-const VERSION: string = '0.01';
+const VERSION: string = '1.0.0';
 const MESSAGE_DELIMITER: string = '\r\n';
 const DISCONNECT_EVENTS: string[] = ['destroy', 'end', 'close', 'error', 'timeout'];
 

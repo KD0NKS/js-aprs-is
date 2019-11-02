@@ -1,21 +1,27 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "esModuleInterop": true,
-        "target": "esnext",
-        "noImplicitAny": true,
-        "removeComments": true,
-        "allowJs": false,
-        "preserveConstEnums": true,
-        "outDir": "dist",
-        "declaration": true,
-        "sourceMap": true
-    },
-    "include": [
-        "index.ts",
-        "src/**/*",
-        "test/**/*"
-    ],
-    "exclude": [ "bin", "coverage", "node_modules", "dist", ".nyc_output" ]
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "target": "esnext",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "allowJs": false,
+    "preserveConstEnums": true,
+    "outDir": "dist",
+    "declaration": true,
+    "sourceMap": true
+  },
+  "include": [
+    "index.ts",
+    "src/**/*",
+    "test/**/*"
+  ],
+  "exclude": [
+    ".nyc_output",
+    "bin",
+    "coverage",
+    "dist",
+    "node_modules"
+  ]
 }
