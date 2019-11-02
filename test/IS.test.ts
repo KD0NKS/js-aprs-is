@@ -1,7 +1,7 @@
 import assert from 'assert';
 import * as net from 'net';
 import * as chai from 'chai';
-import { ISSocket } from '../src/IS';
+import { ISSocket } from '../src/ISSocket';
 
 const expect = chai.expect;
 
