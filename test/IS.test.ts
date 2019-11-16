@@ -57,7 +57,7 @@ describe('Tests for IS class', () => {
         it('Should return a user connection string with all default parameters and no filter.', () => {
             const connection = new ISSocket('aprs.server.com', 12345);
 
-            expect(connection.userLogin).to.equal("user N0CALL pass -1 vers IS.js 1.0.0");
+            expect(connection.userLogin).to.equal("user N0CALL pass -1 vers IS.js 1.0.1");
         });
 
         it('Should return a user connection string where all parameters including filter are specified.', () => {
