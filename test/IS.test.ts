@@ -15,7 +15,7 @@ describe('Tests for IS class', () => {
             expect(connection.callsign).to.equal('N0CALL');
             expect(connection.passcode).to.equal(-1);
             expect(connection.filter).to.be.undefined;
-            expect(connection.appId).to.equal('IS.js 1.0.0');
+            expect(connection.appId).to.equal('IS.js 1.0.1');
         });
 
         it('Should instantiate an IS connection with given host, port, callsign, and appId.  All other values should default.', () => {
