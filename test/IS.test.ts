@@ -71,37 +71,32 @@ describe('Tests for IS class', () => {
         const connection: ISSocket = new ISSocket("localhost", 14580);
         let server: net.Server;
 
-        before((done) => {
-            server = net.createServer(() => {
-            }).listen(14580, () => {
-                done();
-            });
+        before(function() {
+            server = net.createServer(function() {
+            }).listen(14580);
         });
 
-        it('Client should report not being connected to server.', () => {
+        it('Client should report not being connected to server.', function() {
             assert.equal(false, connection.isConnected());
         });
 
-        it('Client should successfully connect to server.', (done) => {
-            connection.connect(() => {
+        it('Client should successfully connect to server.', function() {
+            connection.on('connect', function() {
                 assert.equal(true, connection.isConnected());
-                done();
             });
+
+            connection.connect();
         });
 
-        /*
-        Async issues?
-        it('Client should successfully disconnect from server.', (done) => {
-            connection.disconnect(() => {
-                expect(connection.isConnected()).to.be.false;
-
-                done();
+        it('Client should successfully disconnect from server.', function() {
+            connection.on('disconnect', function() {
+                assert.equal(false, connection.isConnected());
             });
-        });
-        */
 
-        after(() => {
             connection.disconnect();
+        });
+
+        after(function() {
             server.close();
         });
     });
@@ -114,8 +109,8 @@ describe('Tests for IS class', () => {
 
         let server: net.Server;
 
-        before((done) => {
-            connection.on('data', (data) => {
+        before(function(done) {
+            connection.on('data', function(data) {
                 clientData.push(data.toString());
             });
 
@@ -123,7 +118,7 @@ describe('Tests for IS class', () => {
                 clientPackets.push(data.toString());
             });
 
-            server = net.createServer((socket) => {
+            server = net.createServer(function(socket) {
                 socket.on('data', (data) => {
                     serverData.push(data.toString());
                 });
@@ -138,31 +133,31 @@ describe('Tests for IS class', () => {
             });
         });
 
-        it('Client should throw an error trying to send a packet when not connected.', () => {
+        it('Client should throw an error trying to send a packet when not connected.', function() {
             expect(connection.sendLine.bind(connection, 'test 1')).to.throw('Socket not connected.');
         });
 
-        it('Client should successfully connect to server.', (done) => {
-            connection.connect(() => {
+        it('Client should successfully connect to server.', function(done) {
+            connection.connect(function() {
                 connection.sendLine('from client 1');
 
                 done();
             });
         });
 
-        it('Client should recieve 2 pieces of data.', () => {
+        it('Client should recieve 2 pieces of data.', function() {
             expect(clientData.length).to.equal(2);
         });
 
-        it('Client should recieve 16 packets.', () => {
+        it('Client should recieve 16 packets.', function() {
             expect(clientPackets.length).to.equal(16);
         });
 
-        it('Server should recieve 1 piece of data.', () => {
+        it('Server should recieve 1 piece of data.', function() {
             expect(serverData.length).to.equal(1);
         });
 
-        after(() => {
+        after(function() {
             connection.disconnect();
             server.close();
         });

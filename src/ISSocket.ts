@@ -23,11 +23,12 @@ import { Socket } from 'net';
 const VERSION: string = '1.0.0';
 const MESSAGE_DELIMITER: string = '\r\n';
 const DISCONNECT_EVENTS: string[] = ['destroy', 'end', 'close', 'error', 'timeout'];
+const CONNECT_EVENTS: string[] = ['connect', 'ready'];
 
 export class ISSocket extends Socket {
     // not a fan of this... emit events instead? build it out to be a wrapper around null/readable/writable?
-    private isSocketConnected: boolean;
-    private bufferedData: string;
+    private _isSocketConnected: boolean;
+    private _bufferedData: string;
 
     // TODO: auto reconnect?
     // check for empty callsign
@@ -62,8 +63,8 @@ export class ISSocket extends Socket {
             ) {
         super();
 
-        this.bufferedData = '';
-        this.isSocketConnected = false;
+        this._bufferedData = '';
+        this._isSocketConnected = false;
         this.setNoDelay(true);
 
         // TODO: Do we want to throw errors if the host, port, callsign, are null?
@@ -71,14 +72,14 @@ export class ISSocket extends Socket {
         this.on('data', (data: Buffer) => {
             //console.log(data.toString());
 
-            this.bufferedData += data.toString();
-            let msgs = this.bufferedData.split('\r\n');
+            this._bufferedData += data.toString();
+            let msgs = this._bufferedData.split('\r\n');
 
-            if(!this.bufferedData.endsWith('\r\n')) {
-                this.bufferedData = msgs[msgs.length - 1];
+            if(!this._bufferedData.endsWith('\r\n')) {
+                this._bufferedData = msgs[msgs.length - 1];
                 msgs = msgs.slice(0, -1);
             } else {
-                this.bufferedData = '';
+                this._bufferedData = '';
                 msgs = msgs.filter(msg => msg.trim() != '');
             }
 
@@ -87,12 +88,18 @@ export class ISSocket extends Socket {
             });
         });
 
-        for(var e in DISCONNECT_EVENTS) {
+        DISCONNECT_EVENTS.forEach((e) => {
             this.on(e, () => {
                 // Tested, but does not show up in reports as such.
-                this.isSocketConnected = false;
+                this._isSocketConnected = false;
             });
-        }
+        });
+
+        CONNECT_EVENTS.forEach((e) => {
+            this.on(e, () => {
+                this._isSocketConnected = true;
+            });
+        });
     }
 
     /**
@@ -104,14 +111,12 @@ export class ISSocket extends Socket {
      */
     public connect(callback?: any): any {
         super.connect(this.port, this.host, () => {
-            this.isSocketConnected = true;
-
             if(callback) {
                 callback();
             }
         });
 
-        return this;
+        //return this;
 
         /*
         ##    *  Need to send on initial connect the following logon line:
@@ -159,7 +164,7 @@ export class ISSocket extends Socket {
      * @param {string} line - Packet/message to send with <CR><LF> delimiter.
      */
     public sendLine(line: string): void {
-        if(this.isSocketConnected === false) {
+        if(this._isSocketConnected === false) {
             throw new Error('Socket not connected.');
         }
 
@@ -183,7 +188,7 @@ export class ISSocket extends Socket {
      */
     public isConnected(): boolean {
         // use socket.writeable instead?
-        return this.isSocketConnected === true;
+        return this._isSocketConnected === true;
     };
 
     /**
