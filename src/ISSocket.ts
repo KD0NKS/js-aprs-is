@@ -23,7 +23,7 @@ import { Socket } from 'net';
 const VERSION: string = '1.0.0';
 const MESSAGE_DELIMITER: string = '\r\n';
 const DISCONNECT_EVENTS: string[] = ['destroy', 'end', 'close', 'error', 'timeout'];
-const CONNECT_EVENTS: string[] = ['connect'];
+const CONNECT_EVENTS: string[] = ['connect', 'ready'];
 
 export class ISSocket extends Socket {
     // not a fan of this... emit events instead? build it out to be a wrapper around null/readable/writable?
@@ -88,18 +88,18 @@ export class ISSocket extends Socket {
             });
         });
 
-        for(var e in DISCONNECT_EVENTS) {
+        DISCONNECT_EVENTS.forEach((e) => {
             this.on(e, () => {
                 // Tested, but does not show up in reports as such.
                 this._isSocketConnected = false;
             });
-        }
+        });
 
-        for(var e in CONNECT_EVENTS) {
+        CONNECT_EVENTS.forEach((e) => {
             this.on(e, () => {
                 this._isSocketConnected = true;
             });
-        };
+        });
     }
 
     /**
@@ -116,7 +116,7 @@ export class ISSocket extends Socket {
             }
         });
 
-        return this;
+        //return this;
 
         /*
         ##    *  Need to send on initial connect the following logon line:
