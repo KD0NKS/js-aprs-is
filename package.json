@@ -40,7 +40,7 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "devDependencies": {
-    "@istanbuljs/nyc-config-typescript": "^0.1.3",
+    "@istanbuljs/nyc-config-typescript": "^1.0.0",
     "@types/chai": "^4.2.4",
     "@types/mocha": "^5.2.7",
     "chai": "^4.2.0",
@@ -52,6 +52,6 @@
     "typescript": "^3.6.4"
   },
   "dependencies": {
-    "@types/node": "^12.12.5"
+    "@types/node": "^13.1.0"
   }
 }
