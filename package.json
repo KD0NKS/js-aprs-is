@@ -52,6 +52,6 @@
     "typescript": "^3.6.4"
   },
   "dependencies": {
-    "@types/node": "^13.1.0"
+    "@types/node": "^13.5.2"
   }
 }
