@@ -99,6 +99,7 @@ describe('Tests for IS class', () => {
 
         after(function() {
             server.close();
+            connection.destroy();
         });
     });
 
@@ -116,7 +117,7 @@ describe('Tests for IS class', () => {
         });
 
         it('Client should successfully connect to server.', function() {
-            connection.on('connect', function () {
+            connection.on('connect', function() {
                 assert.equal(true, connection.isConnected());
             });
 
@@ -124,7 +125,7 @@ describe('Tests for IS class', () => {
         });
 
         it('Client should successfully disconnect from server.', function() {
-            connection.on('disconnect', function () {
+            connection.on('disconnect', function() {
                 assert.equal(false, connection.isConnected());
             });
 
@@ -132,7 +133,7 @@ describe('Tests for IS class', () => {
         });
 
         it('Client should successfully connect to server.', function() {
-            connection.on('connect', function () {
+            connection.on('connect', function() {
                 assert.equal(true, connection.isConnected());
             });
 
@@ -141,6 +142,7 @@ describe('Tests for IS class', () => {
 
         after(function() {
             server.close();
+            connection.destroy();
         });
     });
 
@@ -203,6 +205,7 @@ describe('Tests for IS class', () => {
         after(function() {
             connection.disconnect();
             server.close();
+            connection.destroy();
         });
     });
 
@@ -212,12 +215,12 @@ describe('Tests for IS class', () => {
 
         let server: net.Server;
 
-        before(function (done) {
+        before(function(done) {
             connection.on('packet', (data: Buffer) => {
                 clientPackets.push(data.toString());
             });
 
-            server = net.createServer(function (socket) {
+            server = net.createServer(function(socket) {
                 socket.write('from server 1 \r\n');
             }).listen(14580);
 
@@ -226,18 +229,19 @@ describe('Tests for IS class', () => {
             });
         });
 
-        it('Client should recieve 1 packet.', function () {
+        it('Client should recieve 1 packet.', function() {
             console.log(clientPackets);
             expect(clientPackets.length).to.equal(1);
         });
 
-        it('The packet received should end in a space.', function () {
+        it('The packet received should end in a space.', function() {
             expect(clientPackets[0].endsWith(' '));
         });
 
-        after(function () {
+        after(function() {
             connection.disconnect();
             server.close();
+            connection.destroy();
         });
     });
 
