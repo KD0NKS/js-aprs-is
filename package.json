@@ -2,7 +2,7 @@
   "author": "afairhurst",
   "license": "ISC",
   "name": "js-aprs-is",
-  "version": "1.0.3",
+  "version": "1.0.2",
   "homepage": "https://github.com/KD0NKS/js-aprs-is",
   "description": "NodeJs library for connecting to an APRS-IS server.",
   "repository": {
