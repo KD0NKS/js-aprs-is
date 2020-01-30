@@ -2,11 +2,12 @@ import assert from 'assert';
 import * as net from 'net';
 import * as chai from 'chai';
 import { ISSocket } from '../src/ISSocket';
+import { version } from '../package.json';
 
 const expect = chai.expect;
 
 describe('Tests for IS class', () => {
-    describe('Test IS constructor.', () => {
+    describe('Test IS constructor.', function() {
         it('Should instantiate an IS instance using all possible default parameter values.', () => {
             const connection: ISSocket = new ISSocket('aprs.server.com', 12345);
 
@@ -15,7 +16,7 @@ describe('Tests for IS class', () => {
             expect(connection.callsign).to.equal('N0CALL');
             expect(connection.passcode).to.equal(-1);
             expect(connection.filter).to.be.undefined;
-            expect(connection.appId).to.equal('IS.js 1.0.1');
+            expect(connection.appId).to.equal(`IS.js ${version}`);
         });
 
         it('Should instantiate an IS connection with given host, port, callsign, and appId.  All other values should default.', () => {
@@ -57,7 +58,7 @@ describe('Tests for IS class', () => {
         it('Should return a user connection string with all default parameters and no filter.', () => {
             const connection = new ISSocket('aprs.server.com', 12345);
 
-            expect(connection.userLogin).to.equal("user N0CALL pass -1 vers IS.js 1.0.1");
+            expect(connection.userLogin).to.equal(`user N0CALL pass -1 vers IS.js ${version}`);
         });
 
         it('Should return a user connection string where all parameters including filter are specified.', () => {
@@ -98,10 +99,54 @@ describe('Tests for IS class', () => {
 
         after(function() {
             server.close();
+            connection.destroy();
         });
     });
 
-    describe('Test connect/disconnect and receiving data from the server', () => {
+    describe('Test connect/disconnect/connect', function() {
+        const connection: ISSocket = new ISSocket("localhost", 14580);
+        let server: net.Server;
+
+        before(function() {
+            server = net.createServer(function() {
+            }).listen(14580);
+        });
+
+        it('Client should report not being connected to server.', function() {
+            assert.equal(false, connection.isConnected());
+        });
+
+        it('Client should successfully connect to server.', function() {
+            connection.on('connect', function() {
+                assert.equal(true, connection.isConnected());
+            });
+
+            connection.connect();
+        });
+
+        it('Client should successfully disconnect from server.', function() {
+            connection.on('disconnect', function() {
+                assert.equal(false, connection.isConnected());
+            });
+
+            connection.disconnect();
+        });
+
+        it('Client should successfully connect to server.', function() {
+            connection.on('connect', function() {
+                assert.equal(true, connection.isConnected());
+            });
+
+            connection.connect();
+        });
+
+        after(function() {
+            server.close();
+            connection.destroy();
+        });
+    });
+
+    describe('Test connect/disconnect and receiving data from the server', function() {
         const connection: ISSocket = new ISSocket("localhost", 14580);
         const clientData: string[] = [];
         const clientPackets: string[] = [];
@@ -160,6 +205,43 @@ describe('Tests for IS class', () => {
         after(function() {
             connection.disconnect();
             server.close();
+            connection.destroy();
+        });
+    });
+
+    describe('Test connect/disconnect and receiving data from the server', function() {
+        const connection: ISSocket = new ISSocket("localhost", 14580);
+        const clientPackets: string[] = [];
+
+        let server: net.Server;
+
+        before(function(done) {
+            connection.on('packet', (data: Buffer) => {
+                clientPackets.push(data.toString());
+            });
+
+            server = net.createServer(function(socket) {
+                socket.write('from server 1 \r\n');
+            }).listen(14580);
+
+            connection.connect(() => {
+                done();
+            });
+        });
+
+        it('Client should recieve 1 packet.', function() {
+            console.log(clientPackets);
+            expect(clientPackets.length).to.equal(1);
+        });
+
+        it('The packet received should end in a space.', function() {
+            expect(clientPackets[0].endsWith(' '));
+        });
+
+        after(function() {
+            connection.disconnect();
+            server.close();
+            connection.destroy();
         });
     });
 

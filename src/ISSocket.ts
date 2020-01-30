@@ -20,7 +20,9 @@ import { Socket } from 'net';
  * @emits {event} data
  * @emits {event} packet
  */
-const VERSION: string = '1.0.1';
+import { version } from '../package.json';
+
+const VERSION: string = version;
 const MESSAGE_DELIMITER: string = '\r\n';
 const DISCONNECT_EVENTS: string[] = ['destroy', 'end', 'close', 'error', 'timeout'];
 const CONNECT_EVENTS: string[] = ['connect', 'ready'];
@@ -70,22 +72,18 @@ export class ISSocket extends Socket {
         // TODO: Do we want to throw errors if the host, port, callsign, are null?
 
         this.on('data', (data: Buffer) => {
-            //console.log(data.toString());
-
             this._bufferedData += data.toString();
             let msgs = this._bufferedData.split('\r\n');
 
-            if(!this._bufferedData.endsWith('\r\n')) {
+            if(this._bufferedData.endsWith('\r\n')) {
+                this._bufferedData = '';
+                msgs = msgs.filter(msg => msg.trim() != '');    // This isn't trimming the actual message
+            } else {
                 this._bufferedData = msgs[msgs.length - 1];
                 msgs = msgs.slice(0, -1);
-            } else {
-                this._bufferedData = '';
-                msgs = msgs.filter(msg => msg.trim() != '');
             }
 
-            msgs.forEach(msg => {
-                this.emit("packet", msg)
-            });
+            this.emitPackets(msgs);
         });
 
         DISCONNECT_EVENTS.forEach((e) => {
@@ -200,5 +198,11 @@ export class ISSocket extends Socket {
     get userLogin(): string {
         return `user ${this.callsign} pass ${this.passcode} vers ${this.appId}`
                 + ((this.filter == undefined || !this.filter) ? '' : ` filter ${this.filter}`);
+    }
+
+    private async emitPackets(msgs: string[]) {
+        msgs.forEach(msg => {
+            this.emit("packet", msg)
+        });
     }
 };
