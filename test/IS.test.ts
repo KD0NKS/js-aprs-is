@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { equal } from 'assert';
 import * as net from 'net';
 import * as chai from 'chai';
 import { ISSocket } from '../src/ISSocket';
@@ -78,12 +78,12 @@ describe('Tests for IS class', () => {
         });
 
         it('Client should report not being connected to server.', function() {
-            assert.equal(false, connection.isConnected());
+            equal(false, connection.isConnected());
         });
 
         it('Client should successfully connect to server.', function() {
             connection.on('connect', function() {
-                assert.equal(true, connection.isConnected());
+                equal(true, connection.isConnected());
             });
 
             connection.connect();
@@ -91,7 +91,7 @@ describe('Tests for IS class', () => {
 
         it('Client should successfully disconnect from server.', function() {
             connection.on('disconnect', function() {
-                assert.equal(false, connection.isConnected());
+                equal(false, connection.isConnected());
             });
 
             connection.disconnect();
@@ -113,12 +113,12 @@ describe('Tests for IS class', () => {
         });
 
         it('Client should report not being connected to server.', function() {
-            assert.equal(false, connection.isConnected());
+            equal(false, connection.isConnected());
         });
 
         it('Client should successfully connect to server.', function() {
             connection.on('connect', function() {
-                assert.equal(true, connection.isConnected());
+                equal(true, connection.isConnected());
             });
 
             connection.connect();
@@ -126,7 +126,7 @@ describe('Tests for IS class', () => {
 
         it('Client should successfully disconnect from server.', function() {
             connection.on('disconnect', function() {
-                assert.equal(false, connection.isConnected());
+                equal(false, connection.isConnected());
             });
 
             connection.disconnect();
@@ -134,7 +134,7 @@ describe('Tests for IS class', () => {
 
         it('Client should successfully connect to server.', function() {
             connection.on('connect', function() {
-                assert.equal(true, connection.isConnected());
+                equal(true, connection.isConnected());
             });
 
             connection.connect();

@@ -5,6 +5,7 @@
   "version": "1.0.3",
   "homepage": "https://github.com/KD0NKS/js-aprs-is",
   "description": "NodeJs library for connecting to an APRS-IS server.",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/KD0NKS/js-aprs-is.git"
