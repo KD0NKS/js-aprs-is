@@ -9,8 +9,8 @@
     "allowJs": false,
     "preserveConstEnums": true,
     "outDir": "dist",
-    "declaration": true,
     "sourceMap": true,
+    "declaration": true,
     "resolveJsonModule": true
   },
   "include": [
@@ -20,8 +20,8 @@
   "exclude": [
     ".nyc_output",
     "bin",
-    "coverage",
     "dist",
+    "coverage",
     "node_modules"
   ]
 }
