@@ -39,7 +39,7 @@
     "build": "tsc",
     "test": "nyc mocha",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "prepublish": "tsc"
+    "prepare": "tsc"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
