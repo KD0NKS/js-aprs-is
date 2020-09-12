@@ -58,7 +58,7 @@ export class ISSocket extends Socket {
             , public callsign: string = "N0CALL"
             , public passcode: number = -1
             , public filter?: string
-            , public appId: string = `${process.title} ${process.version}` // (appname and version num should not exceed 15 characters)
+            , public appId: string = `IS.js v1` // (appname and version num should not exceed 15 characters) TODO: Figure out how to pass process name and version to the parent app.
             ) {
         super();
 
