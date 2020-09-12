@@ -184,7 +184,7 @@ export class ISSocket extends Socket {
     public isConnected(): boolean {
         // use socket.writeable instead?
         return this._isSocketConnected === true;
-    };
+    }
 
     /**
      * Generates a user login packet for an APRS-IS server.
