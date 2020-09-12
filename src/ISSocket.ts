@@ -20,9 +20,6 @@ import { Socket } from 'net';
  * @emits {event} data
  * @emits {event} packet
  */
-import { version } from '../package.json';
-
-const VERSION: string = version;
 const MESSAGE_DELIMITER: string = '\r\n';
 const DISCONNECT_EVENTS: string[] = ['destroy', 'end', 'close', 'error', 'timeout'];
 const CONNECT_EVENTS: string[] = ['connect', 'ready'];
@@ -61,7 +58,7 @@ export class ISSocket extends Socket {
             , public callsign: string = "N0CALL"
             , public passcode: number = -1
             , public filter?: string
-            , public appId: string = `IS.js ${VERSION}` // (appname and versionnum should not exceed 15 characters)
+            , public appId: string = `IS.js ${process.env.npm_package_version}` // (appname and versionnum should not exceed 15 characters)
             ) {
         super();
 

@@ -2,7 +2,7 @@
   "author": "afairhurst",
   "license": "ISC",
   "name": "js-aprs-is",
-  "version": "1.0.4-beta.5",
+  "version": "1.0.4-beta.6",
   "homepage": "https://github.com/KD0NKS/js-aprs-is",
   "description": "NodeJs library for connecting to an APRS-IS server.",
   "type": "module",
@@ -38,8 +38,7 @@
     "setup": "npm install",
     "build": "npm run tsc",
     "test": "nyc mocha",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "prepare": "npm run build"
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
@@ -51,9 +50,7 @@
     "nyc": "^15.1.0",
     "source-map-support": "^0.5.19",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.2"
-  },
-  "dependencies": {
+    "typescript": "^4.0.2",
     "@types/node": "^14.10.0"
   }
 }
