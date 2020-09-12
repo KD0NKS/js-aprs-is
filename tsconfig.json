@@ -8,15 +8,14 @@
     "removeComments": true,
     "allowJs": false,
     "preserveConstEnums": true,
-    "outDir": "dist",
+    "outDir": "./dist",
     "declaration": true,
     "sourceMap": true,
     "resolveJsonModule": true
   },
   "include": [
     "index.ts",
-    "src/**/*",
-    "test/**/*"
+    "src/**/*"
   ],
   "exclude": [
     ".nyc_output",
