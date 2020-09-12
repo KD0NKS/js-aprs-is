@@ -1,5 +1,4 @@
 .vscode
-*.js
 build/
 coverage/
 lib/
