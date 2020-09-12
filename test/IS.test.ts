@@ -14,7 +14,7 @@ describe('Tests for IS class', () => {
             expect(connection.callsign).to.equal('N0CALL');
             expect(connection.passcode).to.equal(-1);
             expect(connection.filter).to.be.undefined;
-            expect(connection.appId).to.equal(`${process.title} ${process.env.npm_package_version}`);
+            expect(connection.appId).to.equal(`${process.title} ${process.version}`);
         });
 
         it('Should instantiate an IS connection with given host, port, callsign, and appId.  All other values should default.', () => {
@@ -56,7 +56,7 @@ describe('Tests for IS class', () => {
         it('Should return a user connection string with all default parameters and no filter.', () => {
             const connection = new ISSocket('aprs.server.com', 12345);
 
-            expect(connection.userLogin).to.equal(`user N0CALL pass -1 vers ${process.title} ${process.env.npm_package_version}`);
+            expect(connection.userLogin).to.equal(`user N0CALL pass -1 vers ${process.title} ${process.version}`);
         });
 
         it('Should return a user connection string where all parameters including filter are specified.', () => {
