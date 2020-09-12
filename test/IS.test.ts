@@ -1,8 +1,6 @@
-import { equal } from 'assert';
 import * as net from 'net';
 import * as chai from 'chai';
 import { ISSocket } from '../src/ISSocket';
-import { version } from '../package.json';
 
 const expect = chai.expect;
 
@@ -16,7 +14,7 @@ describe('Tests for IS class', () => {
             expect(connection.callsign).to.equal('N0CALL');
             expect(connection.passcode).to.equal(-1);
             expect(connection.filter).to.be.undefined;
-            expect(connection.appId).to.equal(`IS.js ${version}`);
+            expect(connection.appId).to.equal(`${process.title} ${process.env.npm_package_version}`);
         });
 
         it('Should instantiate an IS connection with given host, port, callsign, and appId.  All other values should default.', () => {
@@ -58,7 +56,7 @@ describe('Tests for IS class', () => {
         it('Should return a user connection string with all default parameters and no filter.', () => {
             const connection = new ISSocket('aprs.server.com', 12345);
 
-            expect(connection.userLogin).to.equal(`user N0CALL pass -1 vers IS.js ${version}`);
+            expect(connection.userLogin).to.equal(`user N0CALL pass -1 vers ${process.title} ${process.env.npm_package_version}`);
         });
 
         it('Should return a user connection string where all parameters including filter are specified.', () => {
@@ -78,12 +76,12 @@ describe('Tests for IS class', () => {
         });
 
         it('Client should report not being connected to server.', function() {
-            equal(false, connection.isConnected());
+            expect(connection.isConnected()).to.equal(false);
         });
 
         it('Client should successfully connect to server.', function() {
             connection.on('connect', function() {
-                equal(true, connection.isConnected());
+                expect(connection.isConnected()).to.equal(true);
             });
 
             connection.connect();
@@ -91,7 +89,7 @@ describe('Tests for IS class', () => {
 
         it('Client should successfully disconnect from server.', function() {
             connection.on('disconnect', function() {
-                equal(false, connection.isConnected());
+                expect(connection.isConnected()).to.equal(true);
             });
 
             connection.disconnect();
@@ -113,12 +111,12 @@ describe('Tests for IS class', () => {
         });
 
         it('Client should report not being connected to server.', function() {
-            equal(false, connection.isConnected());
+            expect(connection.isConnected()).to.equal(false);
         });
 
         it('Client should successfully connect to server.', function() {
             connection.on('connect', function() {
-                equal(true, connection.isConnected());
+                expect(connection.isConnected()).to.equal(true);
             });
 
             connection.connect();
@@ -126,7 +124,7 @@ describe('Tests for IS class', () => {
 
         it('Client should successfully disconnect from server.', function() {
             connection.on('disconnect', function() {
-                equal(false, connection.isConnected());
+                expect(connection.isConnected()).to.equal(false);
             });
 
             connection.disconnect();
@@ -134,7 +132,7 @@ describe('Tests for IS class', () => {
 
         it('Client should successfully connect to server.', function() {
             connection.on('connect', function() {
-                equal(true, connection.isConnected());
+                expect(connection.isConnected()).to.equal(true);
             });
 
             connection.connect();
