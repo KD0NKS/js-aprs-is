@@ -74,7 +74,7 @@ export class ISSocket extends Socket {
 
             if(this._bufferedData.endsWith('\r\n')) {
                 this._bufferedData = '';
-                msgs = msgs.filter(msg => msg.trim() != '');    // This isn't trimming the actual message
+                msgs = msgs.filter(msg => msg.trim() != '');    // This is trimming out any empty messages
             } else {
                 this._bufferedData = msgs[msgs.length - 1];
                 msgs = msgs.slice(0, -1);
