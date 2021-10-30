@@ -171,6 +171,7 @@ export class ISSocket extends Socket {
         this.emit('sending', data);
         this.emit('data', data);
 
+        // TODO: use callback and emit 'sent' and data events
         this.write(data, 'utf8');
     }
 
@@ -197,7 +198,7 @@ export class ISSocket extends Socket {
                 + ((this.filter == undefined || !this.filter) ? '' : ` filter ${this.filter}`);
     }
 
-    private async emitPackets(msgs: string[]) {
+    private emitPackets(msgs: string[]) {
         msgs.forEach(msg => {
             this.emit("packet", msg)
         });
