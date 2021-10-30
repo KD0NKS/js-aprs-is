@@ -182,7 +182,7 @@ export class ISSocket extends Socket {
      *
      * @example connection.isConnected()
      */
-    public get isConnected(): boolean {
+    public isConnected(): boolean {
         // use socket.writeable instead?
         return this._isSocketConnected === true;
     }
