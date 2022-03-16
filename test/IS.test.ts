@@ -228,7 +228,6 @@ describe('Tests for IS class', () => {
         });
 
         it('Client should recieve 1 packet.', function() {
-            console.log(clientPackets);
             expect(clientPackets.length).to.equal(1);
         });
 
@@ -242,6 +241,38 @@ describe('Tests for IS class', () => {
             connection.destroy();
         });
     });
+
+    describe('Test callback on disconnect', function() {
+        const connection: ISSocket = new ISSocket("localhost", 14580);
+        let server: net.Server;
+
+        before(function(done) {
+            server = net.createServer(function(socket) {
+                socket.write('from server 1 \r\n');
+            }).listen(14580);
+
+            connection.connect(() => {
+                done();
+            });
+        });
+
+        it('Should execute the callback in the disconnect', function() {
+            let count = 0;
+
+            connection.disconnect(function() {
+                count++;
+
+                // This should probably be outside the disconnect.
+                expect(count).to.equal(1);
+            });
+        });
+
+        after(function() {
+            connection.disconnect();
+            server.close();
+            connection.destroy();
+        });
+    })
 
     /*
     Async issues?
