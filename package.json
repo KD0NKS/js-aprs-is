@@ -33,11 +33,11 @@
     "dist/**/*"
   ],
   "scripts": {
-    "tsc": "./node_modules/.bin/tsc",
     "setup": "npm install",
     "build": "npm run tsc",
     "test": "nyc mocha",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "tsc": "./node_modules/.bin/tsc"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
