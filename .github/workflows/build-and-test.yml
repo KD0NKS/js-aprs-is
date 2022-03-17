@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: npm ci
-      - run: npm tsc
+      - run: npm run tsc
       - run: npm test
 
       - name: Coveralls
