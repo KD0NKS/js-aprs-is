@@ -1,17 +1,17 @@
 {
   "compilerOptions": {
+    "allowJs": false,
+    "declaration": true,
+    "esModuleInterop": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "esModuleInterop": true,
-    "target": "esnext",
     "noImplicitAny": true,
-    "removeComments": true,
-    "allowJs": false,
-    "preserveConstEnums": true,
     "outDir": "dist",
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
     "sourceMap": true,
-    "declaration": true,
-    "resolveJsonModule": true
+    "target": "esnext",
   },
   "include": [
     "index.ts",
