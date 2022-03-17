@@ -12,14 +12,6 @@
   "bugs": {
     "url": "https://github.com/KD0NKS/js-aprs-is/issues"
   },
-  "nyc": {
-    "extends": "@istanbuljs/nyc-config-typescript",
-    "all": true,
-    "reporter": [
-      "text",
-      "lcov"
-    ]
-  },
   "keywords": [
     "APRS",
     "APRS-IS",
