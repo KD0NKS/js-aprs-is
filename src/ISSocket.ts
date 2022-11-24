@@ -86,18 +86,18 @@ export class ISSocket extends Socket {
             this.emitPackets(msgs);
         });
 
-        DISCONNECT_EVENTS.forEach((e) => {
+        for(const e of DISCONNECT_EVENTS) {
             this.on(e, () => {
                 // Tested, but does not show up in reports as such.
                 this._isSocketConnected = false;
             });
-        });
+        }
 
-        CONNECT_EVENTS.forEach((e) => {
+        for(const e of CONNECT_EVENTS){
             this.on(e, () => {
                 this._isSocketConnected = true;
             });
-        });
+        }
     }
 
     /**
