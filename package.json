@@ -47,5 +47,8 @@
   "dependencies": {
     "@types/node": "^18.11.11",
     "uuid": "^9.0.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.2"
   }
 }
