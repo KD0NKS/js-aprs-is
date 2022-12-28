@@ -67,7 +67,7 @@ export class ISSocket extends Socket {
 
         this._bufferedData = '';
         this._isSocketConnected = false;
-        this.setNoDelay(true);
+        this.setNoDelay(false);   // If your client software is bidirectional (sends and receives), turn off the Nagle algorithm when connecting to APRS-IS as it can introduce significant delays (TCP_NODELAY).
 
         // TODO: Do we want to throw errors if the host, port, callsign, are null?
 
