@@ -45,7 +45,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@types/node": "^20.1.0",
+    "@types/node": "^20.2.3",
     "uuid": "^9.0.0"
   },
   "optionalDependencies": {
