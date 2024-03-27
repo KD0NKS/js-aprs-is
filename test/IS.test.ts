@@ -70,29 +70,19 @@ describe('Tests for IS class', () => {
         before(function(done) {
             server = createServer(function(socket) {
                 socket.on('data', function(data) {
-                    //console.log(data);
-
-                    //const buff = Buffer.from(data);
-                    //const decoder = new TextDecoder('UTF-8');
-                    //console.log(decoder.decode(buff));
-
-                    //console.log(data.toString())
                     serverData.push(data.toString());
-
-                    console.log(JSON.stringify(serverData));
                 });
-            }).listen(14580);
+            }).listen(port);
 
-            connection.connect(function() {
+            connection.connect(() => {
+                connection.sendLogin();
                 done();
             });
         });
 
         it("Connection should send login packet", function(done) {
-            connection.sendLogin();
-
             expect(serverData.length).to.equal(1);
-                expect(serverData[0]).to.equal("user N0CALL pass -1 vers myapp 1.2\r\n");
+            expect(serverData[0]).to.equal("user N0CALL pass -1 vers myapp 1.2\r\n");
 
             done();
         })
@@ -210,7 +200,7 @@ describe('Tests for IS class', () => {
                 socket.write('server 7\r\nfrom server 8\r\nfrom server 9\r\n from ');
                 socket.write('server 10\r\nfrom server 11\r\nfrom server 12\r\n from ');
                 socket.write('server 13\r\nfrom server 14\r\nfrom server 15\r\n from ');
-            }).listen(14580, () => {
+            }).listen(port, () => {
                 done();
             });
         });
