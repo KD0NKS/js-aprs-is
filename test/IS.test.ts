@@ -1,91 +1,125 @@
-import * as net from 'net';
+import { Server, createServer } from 'net';
 import * as chai from 'chai';
 import { ISSocket } from '../src/ISSocket';
 
 const expect = chai.expect;
+const port = 14580;
 
 describe('Tests for IS class', () => {
     describe('Test IS constructor.', function() {
         it('Should instantiate an IS instance using all possible default parameter values.', () => {
-            const connection: ISSocket = new ISSocket('aprs.server.com', 12345);
+            const connection: ISSocket = new ISSocket('my test app', 'aprs.server.com', 12345, 'N0CALL');
 
+            expect(connection.appId).to.equal('my test app');
             expect(connection.host).to.equal('aprs.server.com');
             expect(connection.port).to.equal(12345);
             expect(connection.callsign).to.equal('N0CALL');
             expect(connection.passcode).to.equal(-1);
-            expect(connection.filter).to.be.undefined;
-            expect(connection.appId).to.equal(`IS.js v1`);
-            expect(connection.id).to.not.be.null;
+            expect(connection.isTransmitEnabled).to.equal(false);
+            expect(connection.aprsFilter).to.be.undefined;
+            expect(connection.id).to.not.be.undefined;
             expect(connection.id).to.not.equal('');
         });
 
         it('Should instantiate an IS connection with given host, port, callsign, appId, and id should be a number.  All other values should default.', () => {
-            const connection = new ISSocket('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b', 12345);
+            const connection = new ISSocket('myapp 3.4b', 'aprs.server.com', 12345, 'N0CALL', undefined, undefined, 12345, undefined);
 
+            expect(connection.appId).to.equal('myapp 3.4b');
             expect(connection.host).to.equal('aprs.server.com');
             expect(connection.port).to.equal(12345);
             expect(connection.callsign).to.equal('N0CALL');
             expect(connection.passcode).to.equal(-1);
-            expect(connection.filter).to.be.undefined;
-            expect(connection.appId).to.equal('myapp 3.4b');
+            expect(connection.isTransmitEnabled).to.equal(false);
+            expect(connection.aprsFilter).to.be.undefined;
             expect(connection.id).to.equal(12345);
         });
 
-        it('Should instantiate an IS connection with given host, port, callsign, filter, appId, and id should be a string.  All other values should default.', () => {
-            const connection = new ISSocket('aprs.server.com', 12345, 'N0CALL', undefined, 'f/*', 'foobar 42', '12345');
+        it('Should instantiate an IS connection with given host, port, callsign, aprsFilter, appId, and id should be a string.  All other values should default.', () => {
+            const connection = new ISSocket('foobar 42', 'aprs.server.com', 12345, 'N0CALL', undefined, undefined, '12345', 'f/*');
 
+            expect(connection.appId).to.equal('foobar 42')
             expect(connection.host).to.equal('aprs.server.com');
             expect(connection.port).to.equal(12345);
             expect(connection.callsign).to.equal('N0CALL');
             expect(connection.passcode).to.equal(-1);
-            expect(connection.filter).to.equal('f/*');
-            expect(connection.appId).to.equal('foobar 42')
+            expect(connection.isTransmitEnabled).to.equal(false);
+            expect(connection.aprsFilter).to.equal('f/*');
             expect(connection.id).to.equal('12345');
         });
 
-        it('Should instantiate an IS connection with given host, port, callsign, filter, and appId.  All other values should default.', () => {
-            const connection = new ISSocket('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2');
+        it('Should instantiate an IS connection with given host, port, callsign, aprsFilter, and appId.  All other values should default.', () => {
+            const connection = new ISSocket('myapp 1.2', 'aprs.server.com', 12345, 'N0CALL', 1234, true, undefined, 'f/*');
 
+            expect(connection.appId).to.equal('myapp 1.2')
             expect(connection.host).to.equal('aprs.server.com');
             expect(connection.port).to.equal(12345);
             expect(connection.callsign).to.equal('N0CALL');
             expect(connection.passcode).to.equal(1234);
-            expect(connection.filter).to.equal('f/*');
-            expect(connection.appId).to.equal('myapp 1.2')
-            expect(connection.isConnected()).to.be.false;
+            expect(connection.isTransmitEnabled).to.equal(true)
+            expect(connection.aprsFilter).to.equal('f/*');
+            expect(connection.isConnected).to.be.false;
         });
     });
 
-    describe('Test UserLogin.', () => {
-        it('Should return a user connection string with all default parameters and no filter.', () => {
-            const connection = new ISSocket('aprs.server.com', 12345);
+    describe('Test UserLogin.', function() {
+        let server: Server;
+        const connection: ISSocket = new ISSocket("myapp 1.2", "localhost", port, "N0CALL");
 
-            expect(connection.userLogin).to.equal(`user N0CALL pass -1 vers IS.js v1`);
+        let serverData: string[] = [];
+
+        before(function(done) {
+            server = createServer(function(socket) {
+                socket.on('data', function(data) {
+                    //console.log(data);
+
+                    //const buff = Buffer.from(data);
+                    //const decoder = new TextDecoder('UTF-8');
+                    //console.log(decoder.decode(buff));
+
+                    //console.log(data.toString())
+                    serverData.push(data.toString());
+
+                    console.log(JSON.stringify(serverData));
+                });
+            }).listen(14580);
+
+            connection.connect(function() {
+                done();
+            });
         });
 
-        it('Should return a user connection string where all parameters including filter are specified.', () => {
-            const connection = new ISSocket('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2');
+        it("Connection should send login packet", function(done) {
+            connection.sendLogin();
 
-            expect(connection.userLogin).to.equal("user N0CALL pass 1234 vers myapp 1.2 filter f/*")
+            expect(serverData.length).to.equal(1);
+                expect(serverData[0]).to.equal("user N0CALL pass -1 vers myapp 1.2\r\n");
+
+            done();
+        })
+
+        after(function() {
+            connection.disconnect();
+            server.close();
+            connection.destroy();
         });
     });
 
     describe('Test connect/disconnect', () => {
-        const connection: ISSocket = new ISSocket("localhost", 14580);
-        let server: net.Server;
+        const connection: ISSocket = new ISSocket("myapp 1.2", "localhost", port, "N0CALL");
+        let server: Server;
 
         before(function() {
-            server = net.createServer(function() {
-            }).listen(14580);
+            server = createServer(function() {
+            }).listen(port);
         });
 
         it('Client should report not being connected to server.', function() {
-            expect(connection.isConnected()).to.equal(false);
+            expect(connection.isConnected).to.equal(false);
         });
 
         it('Client should successfully connect to server.', function() {
             connection.on('connect', function() {
-                expect(connection.isConnected()).to.equal(true);
+                expect(connection.isConnected).to.equal(true);
             });
 
             connection.connect();
@@ -93,7 +127,7 @@ describe('Tests for IS class', () => {
 
         it('Client should successfully disconnect from server.', function() {
             connection.on('disconnect', function() {
-                expect(connection.isConnected()).to.equal(true);
+                expect(connection.isConnected).to.equal(true);
             });
 
             connection.disconnect();
@@ -106,21 +140,21 @@ describe('Tests for IS class', () => {
     });
 
     describe('Test connect/disconnect/connect', function() {
-        const connection: ISSocket = new ISSocket("localhost", 14580);
-        let server: net.Server;
+        const connection: ISSocket = new ISSocket("myapp 1.2", "localhost", port, "N0CALL");
+        let server: Server;
 
         before(function() {
-            server = net.createServer(function() {
-            }).listen(14580);
+            server = createServer(function() {
+            }).listen(port);
         });
 
         it('Client should report not being connected to server.', function() {
-            expect(connection.isConnected()).to.equal(false);
+            expect(connection.isConnected).to.equal(false);
         });
 
         it('Client should successfully connect to server.', function() {
             connection.on('connect', function() {
-                expect(connection.isConnected()).to.equal(true);
+                expect(connection.isConnected).to.equal(true);
             });
 
             connection.connect();
@@ -128,7 +162,7 @@ describe('Tests for IS class', () => {
 
         it('Client should successfully disconnect from server.', function() {
             connection.on('disconnect', function() {
-                expect(connection.isConnected()).to.equal(false);
+                expect(connection.isConnected).to.equal(false);
             });
 
             connection.disconnect();
@@ -136,7 +170,7 @@ describe('Tests for IS class', () => {
 
         it('Client should successfully connect to server.', function() {
             connection.on('connect', function() {
-                expect(connection.isConnected()).to.equal(true);
+                expect(connection.isConnected).to.equal(true);
             });
 
             connection.connect();
@@ -149,12 +183,13 @@ describe('Tests for IS class', () => {
     });
 
     describe('Test connect/disconnect and receiving data from the server', function() {
-        const connection: ISSocket = new ISSocket("localhost", 14580);
+        const connection: ISSocket = new ISSocket("myapp 1.2", "localhost", port, "N0CALL", 12345, true);
+
         const clientData: string[] = [];
         const clientPackets: string[] = [];
         const serverData: string[] = [];
 
-        let server: net.Server;
+        let server: Server;
 
         before(function(done) {
             connection.on('data', function(data) {
@@ -165,7 +200,7 @@ describe('Tests for IS class', () => {
                 clientPackets.push(data.toString());
             });
 
-            server = net.createServer(function(socket) {
+            server = createServer(function(socket) {
                 socket.on('data', (data) => {
                     serverData.push(data.toString());
                 });
@@ -181,12 +216,12 @@ describe('Tests for IS class', () => {
         });
 
         it('Client should throw an error trying to send a packet when not connected.', function() {
-            expect(connection.sendLine.bind(connection, 'test 1')).to.throw('Socket not connected.');
+            expect(connection.send.bind(connection, 'test 1')).to.throw('Socket not connected.');
         });
 
         it('Client should successfully connect to server.', function(done) {
             connection.connect(function() {
-                connection.sendLine('from client 1');
+                connection.send('from client 1');
 
                 done();
             });
@@ -212,19 +247,19 @@ describe('Tests for IS class', () => {
     });
 
     describe('Test connect/disconnect and receiving data from the server', function() {
-        const connection: ISSocket = new ISSocket("localhost", 14580);
+        const connection: ISSocket = new ISSocket("myapp 1.2", "localhost", port, "N0CALL");
         const clientPackets: string[] = [];
 
-        let server: net.Server;
+        let server: Server;
 
         before(function(done) {
             connection.on('packet', (data: Buffer) => {
                 clientPackets.push(data.toString());
             });
 
-            server = net.createServer(function(socket) {
+            server = createServer(function(socket) {
                 socket.write('from server 1 \r\n');
-            }).listen(14580);
+            }).listen(port);
 
             connection.connect(() => {
                 done();
@@ -247,11 +282,11 @@ describe('Tests for IS class', () => {
     });
 
     describe('Test callback on disconnect', function() {
-        const connection: ISSocket = new ISSocket("localhost", 14580);
-        let server: net.Server;
+        const connection: ISSocket = new ISSocket("myapp 1.2", "localhost", port, "N0CALL");
+        let server: Server;
 
         before(function(done) {
-            server = net.createServer(function(socket) {
+            server = createServer(function(socket) {
                 socket.write('from server 1 \r\n');
             }).listen(14580);
 
@@ -276,38 +311,5 @@ describe('Tests for IS class', () => {
             server.close();
             connection.destroy();
         });
-    })
-
-    /*
-    Async issues?
-    describe('Test event to toggle isSocketConnected', () => {
-        let connection: ISSocket = new ISSocket("localhost", 14580);
-        let server: net.Server;
-
-        before((done) => {
-            server = net.createServer((socket) => {
-                //socket.on('end', () => {
-                //    server.close();
-                //});
-
-                //socket.on('connect', (callback: any) => {
-                //    this.destroy();
-                //});
-            }).listen(14580, () => {
-                connection.connect(() => {
-                    done();
-                });
-            });
-        });
-
-        it('Client successfully report socket status as disconnected.', (done) => {
-            connection.on('close', () => {
-                expect(connection.isConnected).to.be.false;
-                done();
-            });
-
-            server.close();
-        });
     });
-    */
 });

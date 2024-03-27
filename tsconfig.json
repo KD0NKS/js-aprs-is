@@ -11,6 +11,7 @@
     "removeComments": true,
     "resolveJsonModule": true,
     "sourceMap": true,
+    "strict": false,
     "target": "esnext",
   },
   "include": [
