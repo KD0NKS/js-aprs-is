@@ -3,9 +3,9 @@
   "license": "ISC",
   "name": "js-aprs-is",
   "version": "2.0.0",
+  "lockfileVersion": 3,
   "homepage": "https://github.com/KD0NKS/js-aprs-is",
   "description": "NodeJs library for connecting to an APRS-IS server.",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/KD0NKS/js-aprs-is.git"
@@ -46,7 +46,7 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
-    "@types/node": "^20.11.30",
+    "@types/node": "^20.12.2",
     "uuid": "^9.0.1"
   },
   "optionalDependencies": {
