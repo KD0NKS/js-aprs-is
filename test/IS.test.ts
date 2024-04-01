@@ -57,7 +57,7 @@ describe('Tests for IS class', () => {
             expect(connection.passcode).to.equal(1234);
             expect(connection.isTransmitEnabled).to.equal(true)
             expect(connection.aprsFilter).to.equal('f/*');
-            expect(connection.isConnected).to.be.false;
+            expect(connection.isConnected()).to.be.false;
         });
     });
 
@@ -104,12 +104,12 @@ describe('Tests for IS class', () => {
         });
 
         it('Client should report not being connected to server.', function() {
-            expect(connection.isConnected).to.equal(false);
+            expect(connection.isConnected()).to.equal(false);
         });
 
         it('Client should successfully connect to server.', function() {
             connection.on('connect', function() {
-                expect(connection.isConnected).to.equal(true);
+                expect(connection.isConnected()).to.equal(true);
             });
 
             connection.connect();
@@ -117,7 +117,7 @@ describe('Tests for IS class', () => {
 
         it('Client should successfully disconnect from server.', function() {
             connection.on('disconnect', function() {
-                expect(connection.isConnected).to.equal(true);
+                expect(connection.isConnected()).to.equal(true);
             });
 
             connection.disconnect();
@@ -139,12 +139,12 @@ describe('Tests for IS class', () => {
         });
 
         it('Client should report not being connected to server.', function() {
-            expect(connection.isConnected).to.equal(false);
+            expect(connection.isConnected()).to.equal(false);
         });
 
         it('Client should successfully connect to server.', function() {
             connection.on('connect', function() {
-                expect(connection.isConnected).to.equal(true);
+                expect(connection.isConnected()).to.equal(true);
             });
 
             connection.connect();
@@ -152,7 +152,7 @@ describe('Tests for IS class', () => {
 
         it('Client should successfully disconnect from server.', function() {
             connection.on('disconnect', function() {
-                expect(connection.isConnected).to.equal(false);
+                expect(connection.isConnected()).to.equal(false);
             });
 
             connection.disconnect();
@@ -160,7 +160,7 @@ describe('Tests for IS class', () => {
 
         it('Client should successfully connect to server.', function() {
             connection.on('connect', function() {
-                expect(connection.isConnected).to.equal(true);
+                expect(connection.isConnected()).to.equal(true);
             });
 
             connection.connect();

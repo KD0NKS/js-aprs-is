@@ -83,4 +83,4 @@ The constructor paramaters have changed drastically.  Please note the order has 
     - appId is now required.
 - ISSocket.sendLine() is now deprecated.
   - Use sendLogin() and send() instead.
-- isConnected replaces isConnected()
+  - send() will still send server commands even if transmit is disabled.
