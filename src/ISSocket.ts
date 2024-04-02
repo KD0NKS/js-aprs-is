@@ -26,6 +26,8 @@ const DISCONNECT_EVENTS: string[] = ['destroy', 'end', 'close', 'error', 'timeou
 const CONNECT_EVENTS: string[] = ['connect', 'ready'];
 
 export class ISSocket extends Socket {
+    private readonly _maxPacketLength: number = 512
+
     // not a fan of this... emit events instead? build it out to be a wrapper around null/readable/writable?
     private _isSocketConnected: boolean;
     private _bufferedData: string;
@@ -40,28 +42,29 @@ export class ISSocket extends Socket {
      * the host and port to connect to and your client's callsign, and one or more
      * optional named options:
      *
-     * @param {string} host - APRS-IS server to connect to.
-     * @param {number} port - Port number of the APRS-IS server to connect to.
-     * @param {string} [callsign=N0CALL] - Your station's callsign.
-     * @param {number} [passcode=-1] - An APRS-IS passcode.
-     * @param {string} [filter] - An APRS-IS filter string sent to the server.
-     * @param {string} [appid=IS.js 1.0.0] - Your application's name and version number direction finding. Should not exceed 15 characters.
+     * @param {string} [appid] - Your application's name and version number direction finding. Should not exceed 15 characters.
+     * @param {string} [host] - APRS-IS server to connect to.
+     * @param {number} [port] - Port number of the APRS-IS server to connect to.
+     * @param {string} [callsign] - Your station's callsign.
+     * @param {number} [passcode=-1] - An APRS-IS passcode.  NOTE: isTransmitEnabled must be set to true even if this is set to be able to send a packet to the server.
+     * @param {boolean} [isTransmitEnabled=false] - A flag to tell whether or not a packet can be sent on this connection.  Intended to prevent accidental sending of data. NOTE: passcode must be properly set, otherwise the server will reject any packets, even if this is true.
+     * @param {string | null | undefined} [aprsFilter] - An APRS-IS filter string sent to the server.
      * @param {string | number} [id=uuidV4()] - A unique id for the application.  This is not required, but is here for convenience.
      *
-     * @example let connection = new IS('aprs.server.com', 12345);
-     * @example let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, undefined, 'myapp 3.4b');
-     * @example let connection = new IS('aprs.server.com', 12345, 'N0CALL', undefined, 'f/*', 'foobar 42');
-     * @example let connection = new IS('aprs.server.com', 12345, 'N0CALL', 1234, 'f/*', 'myapp 1.2', true);
+     * @example let connection = new IS('myapp 3.4b', 'aprs.server.com', 12345, 'N0CALL');
+     * @example let connection = new IS('foobar 42', 'aprs.server.com', 12345, 'N0CALL', undefined, 'f/*');
+     * @example let connection = new IS('myapp 1.2', 'aprs.server.com', 12345, 'N0CALL', 1234, true, 'f/*', 'abc123');
     */
     // Don't provide multiple constructors.  Passing undefined parameters is annoying, but ideally, most, if not all
     // parameters should be used anyway.
-    constructor(public host: string
+    constructor(public appId: string // (appname and version num should not exceed 15 characters) TODO: Figure out how to pass process name and version to the parent app.
+            , public host: string
             , public port: number
-            , public callsign: string = "N0CALL"
+            , public callsign: string
             , public passcode: number = -1
-            , public filter?: string
-            , public appId: string = `IS.js v1` // (appname and version num should not exceed 15 characters) TODO: Figure out how to pass process name and version to the parent app.
+            , public isTransmitEnabled: boolean  = false
             , public id: string | number = uuidV4() // This is odd at best... leave it for now
+            , public aprsFilter?: string | null | undefined
             ) {
         super();
 
@@ -71,6 +74,7 @@ export class ISSocket extends Socket {
 
         // TODO: Do we want to throw errors if the host, port, callsign, are null?
 
+        // TODO: Should make this public so it can be overwritten.
         this.on('data', (data: Buffer) => {
             this._bufferedData += data.toString();
             let msgs = this._bufferedData.split('\r\n');
@@ -159,9 +163,9 @@ export class ISSocket extends Socket {
      * should be a complete packet but WITHOUT the <CR><LF> separator
      * used on the APRS-IS.
      *
-     * @param {string} line - Packet/message to send with <CR><LF> delimiter.
+     * @param {string} line - Packet/message to send this should not include the <CR><LF> delimiter.
      */
-    public sendLine(line: string): void {
+    private sendLine(line: string): void {
         if(this._isSocketConnected === false) {
             throw new Error('Socket not connected.');
         }
@@ -170,12 +174,43 @@ export class ISSocket extends Socket {
         // Trusting the calling appliation to handle this appropriately for now.
         const data = `${line}${MESSAGE_DELIMITER}`;
 
-        // Does it make sense to have a 'sending' and 'data' event?
-        this.emit('sending', data);
-        this.emit('data', data);
+        if(data.length <= this._maxPacketLength) {
+            // Does it make sense to have a 'sending' and 'data' event?
+            this.emit('sending', data);
+            this.emit('data', data);
 
-        // TODO: use callback and emit 'sent' and data events
-        this.write(data, 'utf8');
+            // TODO: use callback and emit 'sent' and data events
+            this.write(data, 'utf8');
+        } else {
+            throw new Error("Packet length must be shorter than 512 bytes.")
+        }
+    }
+
+    /**
+     * Sends a login message regardless of the value of isTransmitEnabled.
+     */
+    public sendLogin(callback?: any): any {
+        this.sendLine(`user ${this.callsign} pass ${this.passcode} vers ${this.appId}`
+                + (!!this.aprsFilter ? ` filter ${this.aprsFilter}` : ''));
+
+        if(callback) {
+            callback()
+        }
+    }
+
+    /**
+     * Sends a packet only if:
+     * - isTransmitEnabled is set to true.  Used as a safeguard to prevent unintentionally sending packets.
+     * - packet is a control command starting with a '#' character.
+     *
+     * @param {string} packet - Packet to send WITHOUT the <CR><LF> separator.
+     */
+    public send(packet: string): void {
+        if(this.isTransmitEnabled === true || packet.startsWith('#')) {
+            this.sendLine(packet)
+        } else {
+            throw new Error("Transmitting data is not permitted.");
+        }
     }
 
     /**
@@ -183,22 +218,11 @@ export class ISSocket extends Socket {
      *
      * @returns {boolean} True if connected, otherwise false.
      *
-     * @example connection.isConnected()
+     * @example connection.isConnected
      */
     public isConnected(): boolean {
         // use socket.writeable instead?
         return this._isSocketConnected === true;
-    }
-
-    /**
-     * Generates a user login packet for an APRS-IS server.
-     * Replaces perl-aprs-is user_command function.
-     *
-     * @returns {string} Formatted user login packet/message without message delimiter.
-     */
-    get userLogin(): string {
-        return `user ${this.callsign} pass ${this.passcode} vers ${this.appId}`
-                + ((this.filter == undefined || !this.filter) ? '' : ` filter ${this.filter}`);
     }
 
     private emitPackets(msgs: string[]) {

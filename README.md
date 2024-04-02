@@ -75,3 +75,12 @@ connection.on('data', (data: Buffer) => {
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
+
+# UPGRADING 1.x.x to 2.x.x
+## ISSocket Constructor
+The constructor paramaters have changed drastically.  Please note the order has changed as well as what is required.
+    - Callsign is no longer defaulted to discourage useage of erroneous callsigns.
+    - appId is now required.
+- ISSocket.sendLine() is now deprecated.
+  - Use sendLogin() and send() instead.
+  - send() will still send server commands even if transmit is disabled.
