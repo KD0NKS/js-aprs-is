@@ -191,7 +191,7 @@ export class ISSocket extends Socket {
      */
     public sendLogin(callback?: any): any {
         this.sendLine(`user ${this.callsign} pass ${this.passcode} vers ${this.appId}`
-                + ((this.aprsFilter == undefined || !this.aprsFilter) ? '' : ` filter ${this.aprsFilter}`));
+                + (!!this.aprsFilter ? ` filter ${this.aprsFilter}` : ''));
 
         if(callback) {
             callback()

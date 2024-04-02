@@ -22,7 +22,7 @@ describe('Tests for IS class', () => {
         });
 
         it('Should instantiate an IS connection with given host, port, callsign, appId, and id should be a number.  All other values should default.', () => {
-            const connection = new ISSocket('myapp 3.4b', 'aprs.server.com', 12345, 'N0CALL', undefined, undefined, 12345, undefined);
+            const connection: ISSocket = new ISSocket('myapp 3.4b', 'aprs.server.com', 12345, 'N0CALL', undefined, undefined, 12345, undefined);
 
             expect(connection.appId).to.equal('myapp 3.4b');
             expect(connection.host).to.equal('aprs.server.com');
@@ -35,7 +35,7 @@ describe('Tests for IS class', () => {
         });
 
         it('Should instantiate an IS connection with given host, port, callsign, aprsFilter, appId, and id should be a string.  All other values should default.', () => {
-            const connection = new ISSocket('foobar 42', 'aprs.server.com', 12345, 'N0CALL', undefined, undefined, '12345', 'f/*');
+            const connection: ISSocket = new ISSocket('foobar 42', 'aprs.server.com', 12345, 'N0CALL', undefined, undefined, '12345', 'f/*');
 
             expect(connection.appId).to.equal('foobar 42')
             expect(connection.host).to.equal('aprs.server.com');
@@ -48,7 +48,7 @@ describe('Tests for IS class', () => {
         });
 
         it('Should instantiate an IS connection with given host, port, callsign, aprsFilter, and appId.  All other values should default.', () => {
-            const connection = new ISSocket('myapp 1.2', 'aprs.server.com', 12345, 'N0CALL', 1234, true, undefined, 'f/*');
+            const connection: ISSocket = new ISSocket('myapp 1.2', 'aprs.server.com', 12345, 'N0CALL', 1234, true, undefined, 'f/*');
 
             expect(connection.appId).to.equal('myapp 1.2')
             expect(connection.host).to.equal('aprs.server.com');
@@ -61,9 +61,9 @@ describe('Tests for IS class', () => {
         });
     });
 
-    describe('Test UserLogin.', function() {
+    describe('Test UserLogin without callback and no filter.', function() {
         let server: Server;
-        const connection: ISSocket = new ISSocket("myapp 1.2", "localhost", port, "N0CALL");
+        const connection: ISSocket = new ISSocket("myapp 1.2", "localhost", port, "N0CALL", undefined, undefined, undefined, 'f/*');
 
         let serverData: string[] = [];
 
@@ -82,10 +82,122 @@ describe('Tests for IS class', () => {
 
         it("Connection should send login packet", function(done) {
             expect(serverData.length).to.equal(1);
+            expect(serverData[0]).to.equal("user N0CALL pass -1 vers myapp 1.2 filter f/*\r\n");
+
+            done();
+        });
+
+        after(function() {
+            connection.disconnect();
+            server.close();
+            connection.destroy();
+        });
+    });
+
+    describe('Test UserLogin with callback.', function() {
+        let server: Server;
+        let callbackTest;
+
+        const callbackTestValue = "Callback";
+        const connection: ISSocket = new ISSocket("myapp 1.2", "localhost", port, "N0CALL");
+
+        let serverData: string[] = [];
+
+        before(function(done) {
+            server = createServer(function(socket) {
+                socket.on('data', function(data) {
+                    serverData.push(data.toString());
+                });
+            }).listen(port);
+
+            connection.connect(() => {
+                connection.sendLogin(() => {
+                    callbackTest = callbackTestValue;
+                });
+                done();
+            });
+        });
+
+        it("Connection should send login packet", function(done) {
+            expect(serverData.length).to.equal(1);
             expect(serverData[0]).to.equal("user N0CALL pass -1 vers myapp 1.2\r\n");
 
             done();
-        })
+        });
+
+        it("Login should have run the callback function", function(done) {
+            expect(callbackTest).to.equal(callbackTestValue);
+
+            done();
+        });
+
+        after(function() {
+            connection.disconnect();
+            server.close();
+            connection.destroy();
+        });
+    });
+
+    describe('Test filters and trying to send data when isTransmitEnabled is set to false.', function() {
+        let server: Server;
+        const connection: ISSocket = new ISSocket("myapp 1.2", "localhost", port, "N0CALL");
+
+        let serverData: string[] = [];
+
+        before(function(done) {
+            server = createServer(function(socket) {
+                socket.on('data', function(data) {
+                    serverData.push(data.toString());
+                });
+            }).listen(port);
+
+            connection.connect(() => {
+                connection.send("# filter f/*");
+
+                done();
+            });
+        });
+
+        it("Connection should be able to set filter.", function(done) {
+            expect(serverData[0]).to.equal("# filter f/*\r\n");
+            expect(serverData.length).to.equal(1);
+
+            done();
+        });
+
+        it('Client should throw an error trying to send a packet when transmitting is disabled.', function() {
+            expect(connection.send.bind(connection, 'test 1')).to.throw('Transmitting data is not permitted.');
+        });
+
+        after(function() {
+            connection.disconnect();
+            server.close();
+            connection.destroy();
+        });
+    });
+
+    describe('Test trying to send too many bytes in a packet.', function() {
+        const connection: ISSocket = new ISSocket("myapp 1.2", "localhost", port, "N0CALL", 12345, true);
+        const serverData: string[] = [];
+
+        let server: Server;
+
+        before(function(done) {
+            server = createServer(function(socket) {
+                socket.on('data', (data) => {
+                    serverData.push(data.toString());
+                });
+            }).listen(port);
+
+            connection.connect(() => {
+                done();
+            });
+        });
+
+        it('Client should throw an error trying to send too long of packet.', function() {
+            expect(connection.send.bind(connection, 'm53jg80gNklq8NBX4di52hGa1z096QMnK8aRmYXCL31TJqAgL89iNdRgXhKz8QOKObb0sQAS2A22AwS1cbK30lPGF9fWyddDptPr5S2K4lSWapiKk0eM5uQbQxNk884tuQaY3joC8IRbkzAzzw1IaiGm8lttM9Duk1m8vZE5LlxhIB4rofi6lZQPOua8ugyuoiKCAjrtusV1rm5T29T6RSE8SCog0pX5ZO87WCRTPxRT51vwUXYPfClZz9AC2hRxMaKaOyhMUv1wQNKThJPh63OacU5erCPlzTWxqOS5id7MFVFhV3ozON5vrVXObYyVYyvIKxbbovPOf8O14iNwatkGqWgSRrj1G7lJdzhzBgquppSkPM2vQX55Lrnnizszx44RLVoIhoTBxnGsSomCZaLkScdBFksB2HUgRdMw711YC680QUV3tWlJRDnHB8IZWn2BgRYQbl4M02ILvZ7ZwB9PuVeztb8x9ufX4SzzgahCpNdkY36CY0ATL5NVf7Q'))
+                    .to.throw('Packet length must be shorter than 512 bytes.');
+        });
 
         after(function() {
             connection.disconnect();
