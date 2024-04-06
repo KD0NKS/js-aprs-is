@@ -83,8 +83,7 @@ export class ISSocket extends Socket {
                 this._bufferedData = '';
                 msgs = msgs.filter(msg => msg.trim() != '');    // This is trimming out any empty messages
             } else {
-                this._bufferedData = msgs[msgs.length - 1];
-                msgs = msgs.slice(0, -1);
+                this._bufferedData = msgs.pop();
             }
 
             this.emitPackets(msgs);

@@ -39,12 +39,11 @@ connection.on('data', (data: Buffer) => {
     bufferedData += data.toString();
     let msgs = bufferedData.split('\r\n');
 
-    if(!bufferedData.endsWith('\r\n')) {
-        bufferedData = msgs[msgs.length - 1];
-        msgs = msgs.slice(0, -1);
+    if(this._bufferedData.endsWith('\r\n')) {
+        this._bufferedData = '';
+        msgs = msgs.filter(msg => msg.trim() != '');    // This is trimming out any empty messages
     } else {
-        bufferedData = '';
-        msgs = msgs.filter(msg => msg.trim() != '');
+        this._bufferedData = msgs.pop();
     }
 
     //...
