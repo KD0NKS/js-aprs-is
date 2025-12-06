@@ -21,7 +21,7 @@ jobs:
       - name: Get changed files
         id: changed_files
         if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'dependabot')
-        uses: lots0logs/gh-action-get-changed-files@latest
+        uses: lots0logs/gh-action-get-changed-files@2.2.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
